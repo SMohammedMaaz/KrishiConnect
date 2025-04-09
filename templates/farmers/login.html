@@ -4,88 +4,349 @@
 
 {% block extra_css %}
 <style>
-    .login-container {
-        max-width: 450px;
-        margin: 0 auto;
+    .login-section {
+        padding: 70px 0;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
     }
+    
+    .login-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .auth-logo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
     .phone-input {
         display: flex;
     }
+    
     .country-code {
         width: 80px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        background-color: #f8f9fa;
+    }
+    
+    .phone-input .form-control {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+    
+    .login-container .form-control {
+        padding: 12px 15px;
+        height: auto;
+    }
+    
+    .otp-inputs {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .otp-input {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border: 2px solid #e1e1e1;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .otp-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+    }
+    
+    .auth-divider {
+        position: relative;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .auth-divider::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 43%;
+        height: 1px;
+        background-color: #e1e1e1;
+    }
+    
+    .auth-divider::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 43%;
+        height: 1px;
+        background-color: #e1e1e1;
+    }
+    
+    .auth-divider span {
+        background-color: white;
+        padding: 0 10px;
+        position: relative;
+        z-index: 1;
+        color: var(--text-light);
+    }
+    
+    .login-footer {
+        text-align: center;
+        margin-top: 25px;
+        color: var(--text-light);
+    }
+    
+    .login-footer a {
+        color: var(--primary-color);
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .login-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    .btn-login {
+        padding: 12px 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+    }
+    
+    .resend-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    
+    .resend-timer {
+        display: flex;
+        align-items: center;
+        color: var(--text-light);
+    }
+    
+    .countdown-display {
+        background-color: #f5f5f5;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin-left: 8px;
+    }
+    
+    .alert {
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .alert i {
+        margin-right: 10px;
+        margin-top: 2px;
+    }
+    
+    .farmer-login-img {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+    
+    .farmer-login-img img {
+        border-radius: 15px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .features-list {
+        margin-top: 25px;
+    }
+    
+    .features-list li {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .features-list li i {
+        color: var(--primary-color);
+        margin-right: 10px;
+        margin-top: 4px;
+    }
+    
+    @media (max-width: 991px) {
+        .farmer-login-img {
+            margin-bottom: 40px;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="login-container">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">Farmer Login</h3>
+<section class="login-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 d-none d-lg-block" data-aos="fade-right">
+                <div class="farmer-login-img">
+                    <img src="https://images.unsplash.com/photo-1585594900900-28f712413f93?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80" class="img-fluid" alt="Farmer Login">
+                    
+                    <div class="features-list mt-4">
+                        <h4>Benefits for Farmers</h4>
+                        <ul class="list-unstyled">
+                            <li>
+                                <i data-feather="check-circle"></i> 
+                                <div>
+                                    <strong>Direct Market Access</strong>
+                                    <p class="text-muted mb-0">Connect directly with buyers and get better prices</p>
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="check-circle"></i>
+                                <div>
+                                    <strong>Smart Crop Suggestions</strong> 
+                                    <p class="text-muted mb-0">AI-powered recommendations based on your location</p>
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="check-circle"></i>
+                                <div>
+                                    <strong>Simple Dashboard</strong>
+                                    <p class="text-muted mb-0">Easy-to-use interface to manage your products</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <i data-feather="user" class="feather-large text-success"></i>
-                        <p class="mt-2">Login with your mobile number using OTP verification</p>
+            </div>
+            
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="login-container">
+                    <div class="auth-header">
+                        <div class="auth-logo">
+                            <i data-feather="leaf" class="text-success me-2"></i>
+                            <span>KrishiConnect</span>
+                        </div>
+                        <h3>Farmer Login</h3>
+                        <p class="text-muted">Access your account using mobile verification</p>
                     </div>
                     
                     <div id="login-form">
                         <div class="alert alert-info">
                             <i data-feather="info"></i> 
-                            We use phone verification for secure and easy access.
+                            <div>We use phone verification for secure access. Enter your registered mobile number to continue.</div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
+                        <div class="mb-4">
+                            <label for="phone" class="form-label">Mobile Number</label>
                             <div class="phone-input">
                                 <div class="input-group">
                                     <span class="input-group-text country-code">+91</span>
                                     <input type="tel" class="form-control" id="phone" placeholder="Enter 10-digit number" maxlength="10" pattern="[0-9]{10}" required>
                                 </div>
                             </div>
+                            <div class="form-text">We'll send a one-time password to this number</div>
                         </div>
                         
                         <div class="d-grid">
-                            <button type="button" class="btn btn-success" id="send-otp-btn">
-                                <span class="spinner-border spinner-border-sm d-none" id="otp-spinner"></span>
+                            <button type="button" class="btn btn-success btn-login" id="send-otp-btn">
+                                <span class="spinner-border spinner-border-sm d-none me-2" id="otp-spinner"></span>
+                                <i data-feather="message-circle" class="me-2"></i>
                                 Send OTP
                             </button>
+                        </div>
+                        
+                        <div class="auth-divider">
+                            <span>New to KrishiConnect?</span>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <a href="/api/farmers/register-view/" class="btn btn-outline-success">
+                                <i data-feather="user-plus" class="me-2"></i>
+                                Register as a Farmer
+                            </a>
                         </div>
                     </div>
                     
                     <div id="otp-form" class="d-none">
                         <div class="alert alert-success">
                             <i data-feather="check-circle"></i>
-                            OTP sent to your phone. Please enter it below.
+                            <div>OTP sent successfully to <strong id="masked-phone">+91 XXXXXX1234</strong></div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="otp" class="form-label">Enter OTP</label>
-                            <input type="text" class="form-control" id="otp" placeholder="6-digit OTP" maxlength="6" pattern="[0-9]{6}" required>
+                        <div class="mb-4">
+                            <label for="otp" class="form-label">Enter One-Time Password</label>
+                            <div class="mb-2">
+                                <input type="text" class="form-control" id="otp" placeholder="Enter 6-digit OTP" maxlength="6" pattern="[0-9]{6}" required>
+                            </div>
+                            <div class="form-text">Check your SMS for the verification code</div>
                         </div>
                         
-                        <div class="mb-3 text-center">
-                            <span id="timer">Resend OTP in <span id="countdown">60</span>s</span>
+                        <div class="resend-container">
+                            <div id="timer" class="resend-timer">
+                                <span>Resend OTP in </span>
+                                <div class="countdown-display" id="countdown">60</div>
+                                <span>s</span>
+                            </div>
                             <a href="#" id="resend-otp" class="d-none">Resend OTP</a>
                         </div>
                         
-                        <div class="d-grid">
-                            <button type="button" class="btn btn-success" id="verify-otp-btn">
-                                <span class="spinner-border spinner-border-sm d-none" id="verify-spinner"></span>
-                                Verify OTP
+                        <div class="d-grid mb-3">
+                            <button type="button" class="btn btn-success btn-login" id="verify-otp-btn">
+                                <span class="spinner-border spinner-border-sm d-none me-2" id="verify-spinner"></span>
+                                <i data-feather="check" class="me-2"></i>
+                                Verify & Login
                             </button>
                         </div>
+                        
+                        <div class="text-center">
+                            <a href="#" id="back-to-phone">
+                                <i data-feather="arrow-left" class="feather-small me-1"></i> 
+                                Back to phone number
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="card-footer text-center">
-                    <p class="mb-0">New farmer? <a href="/api/farmers/register-view/">Register here</a></p>
+                    
+                    <div class="login-footer">
+                        <p>By logging in, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
 
 {% block extra_js %}
@@ -108,6 +369,9 @@
     firebase.initializeApp(firebaseConfig);
     
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Feather icons again for the dynamically shown content
+        feather.replace();
+        
         const loginForm = document.getElementById('login-form');
         const otpForm = document.getElementById('otp-form');
         const phoneInput = document.getElementById('phone');
@@ -119,6 +383,8 @@
         const countdownSpan = document.getElementById('countdown');
         const otpSpinner = document.getElementById('otp-spinner');
         const verifySpinner = document.getElementById('verify-spinner');
+        const maskedPhoneSpan = document.getElementById('masked-phone');
+        const backToPhoneBtn = document.getElementById('back-to-phone');
         
         let verificationId = null;
         let countdownInterval = null;
@@ -127,8 +393,7 @@
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('send-otp-btn', {
             'size': 'invisible',
             'callback': (response) => {
-                // reCAPTCHA solved, send OTP
-                sendOTP();
+                // reCAPTCHA solved, already handled in click event
             }
         });
         
@@ -144,17 +409,57 @@
             sendOTP();
         });
         
+        // Back to phone button click
+        backToPhoneBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            otpForm.classList.add('d-none');
+            loginForm.classList.remove('d-none');
+            
+            // Clear countdown if active
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        });
+        
+        // Phone input auto-formatting
+        phoneInput.addEventListener('input', function(e) {
+            // Remove any non-numeric characters
+            this.value = this.value.replace(/\D/g, '');
+        });
+        
+        // OTP input auto-formatting and auto-submit
+        otpInput.addEventListener('input', function(e) {
+            // Remove any non-numeric characters
+            this.value = this.value.replace(/\D/g, '');
+            
+            // Auto-submit when length is 6
+            if (this.value.length === 6) {
+                setTimeout(() => {
+                    verifyOtpBtn.click();
+                }, 500);
+            }
+        });
+        
         // Send OTP function
         function sendOTP() {
             const phoneNumber = '+91' + phoneInput.value.trim();
             
             if (!phoneNumber.match(/^\+91[0-9]{10}$/)) {
-                alert('Please enter a valid 10-digit phone number');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Phone Number',
+                    text: 'Please enter a valid 10-digit phone number',
+                    confirmButtonColor: '#2E7D32'
+                });
                 return;
             }
             
             otpSpinner.classList.remove('d-none');
             sendOtpBtn.disabled = true;
+            
+            // Create masked phone number for display
+            const maskedPhone = '+91 XXXXXX' + phoneInput.value.slice(-4);
+            maskedPhoneSpan.textContent = maskedPhone;
             
             firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
                 .then((confirmationResult) => {
@@ -165,15 +470,29 @@
                     loginForm.classList.add('d-none');
                     otpForm.classList.remove('d-none');
                     
+                    // Initialize feather icons for newly visible content
+                    feather.replace();
+                    
                     // Start countdown
                     startCountdown();
                     
                     otpSpinner.classList.add('d-none');
                     sendOtpBtn.disabled = false;
+                    
+                    // Focus on OTP input
+                    setTimeout(() => {
+                        otpInput.focus();
+                    }, 500);
                 })
                 .catch((error) => {
                     console.error('Error sending OTP:', error);
-                    alert('Error sending OTP. Please try again.');
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'OTP Error',
+                        text: 'Error sending OTP. Please try again later.',
+                        confirmButtonColor: '#2E7D32'
+                    });
                     
                     otpSpinner.classList.add('d-none');
                     sendOtpBtn.disabled = false;
@@ -190,7 +509,12 @@
             const otp = otpInput.value.trim();
             
             if (!otp || otp.length !== 6) {
-                alert('Please enter a valid 6-digit OTP');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid OTP',
+                    text: 'Please enter a valid 6-digit OTP',
+                    confirmButtonColor: '#2E7D32'
+                });
                 return;
             }
             
@@ -203,6 +527,16 @@
                 .then((result) => {
                     // User signed in successfully
                     const user = result.user;
+                    
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Verification Successful',
+                        text: 'You have been successfully verified!',
+                        confirmButtonColor: '#2E7D32',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     
                     // Get ID token
                     return user.getIdToken();
@@ -226,10 +560,18 @@
                 })
                 .catch((error) => {
                     console.error('Error verifying OTP:', error);
-                    alert('Invalid OTP. Please try again.');
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid OTP',
+                        text: 'The OTP you entered is invalid. Please try again.',
+                        confirmButtonColor: '#2E7D32'
+                    });
                     
                     verifySpinner.classList.add('d-none');
                     verifyOtpBtn.disabled = false;
+                    otpInput.value = '';
+                    otpInput.focus();
                 });
         }
         
@@ -262,4 +604,7 @@
         }
     });
 </script>
+
+<!-- SweetAlert2 for better alerts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %}

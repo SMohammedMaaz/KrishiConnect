@@ -4,70 +4,368 @@
 
 {% block extra_css %}
 <style>
+    .login-section {
+        padding: 70px 0;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+    }
+    
     .login-container {
-        max-width: 450px;
+        max-width: 500px;
         margin: 0 auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .auth-logo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .login-container .form-control {
+        padding: 12px 15px;
+        height: auto;
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+    
+    .login-container .form-control:focus {
+        background-color: white;
+        box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.25);
+        border-color: var(--primary-light);
+    }
+    
+    .form-floating {
+        margin-bottom: 20px;
+    }
+    
+    .form-floating > .form-control {
+        padding: 1.5rem 1rem;
+    }
+    
+    .form-floating > label {
+        padding: 1rem;
+    }
+    
+    .auth-divider {
+        position: relative;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .auth-divider::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 43%;
+        height: 1px;
+        background-color: #e1e1e1;
+    }
+    
+    .auth-divider::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 43%;
+        height: 1px;
+        background-color: #e1e1e1;
+    }
+    
+    .auth-divider span {
+        background-color: white;
+        padding: 0 10px;
+        position: relative;
+        z-index: 1;
+        color: var(--text-light);
+    }
+    
+    .login-footer {
+        text-align: center;
+        margin-top: 25px;
+        color: var(--text-light);
+    }
+    
+    .login-footer a {
+        color: var(--primary-color);
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .login-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    .btn-login {
+        padding: 12px 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+    }
+    
+    .alert {
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .alert i {
+        margin-right: 10px;
+        margin-top: 2px;
+    }
+    
+    .buyer-login-img {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+    
+    .buyer-login-img img {
+        border-radius: 15px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .features-list {
+        margin-top: 25px;
+    }
+    
+    .features-list li {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .features-list li i {
+        color: var(--primary-color);
+        margin-right: 10px;
+        margin-top: 4px;
+    }
+    
+    .social-auth {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+    
+    .social-auth-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin: 0 5px;
+        background-color: white;
+        color: var(--text-dark);
+        border: 1px solid #e1e1e1;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .social-auth-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .social-auth-btn i {
+        margin-right: 8px;
+    }
+    
+    .social-auth-btn.google-btn {
+        color: #DB4437;
+        border-color: rgba(219, 68, 55, 0.2);
+    }
+    
+    .social-auth-btn.google-btn:hover {
+        background-color: rgba(219, 68, 55, 0.1);
+    }
+
+    .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .remember-forgot a {
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .remember-forgot a:hover {
+        text-decoration: underline;
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    /* Custom toggle password visibility */
+    .password-field {
+        position: relative;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        top: 12px;
+        right: 15px;
+        background: none;
+        border: none;
+        color: var(--text-light);
+        cursor: pointer;
+    }
+    
+    @media (max-width: 991px) {
+        .buyer-login-img {
+            margin-bottom: 40px;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="login-container">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">Buyer Login</h3>
+<section class="login-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="auth-header d-lg-none">
+                    <div class="auth-logo">
+                        <i data-feather="leaf" class="text-success me-2"></i>
+                        <span>KrishiConnect</span>
+                    </div>
+                    <h3>Buyer Login</h3>
+                    <p class="text-muted">Access your buyer account</p>
                 </div>
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <i data-feather="shopping-bag" class="feather-large text-success"></i>
-                        <p class="mt-2">Login to access direct purchasing from farmers</p>
+                
+                <div class="login-container">
+                    <div class="auth-header d-none d-lg-block">
+                        <div class="auth-logo">
+                            <i data-feather="leaf" class="text-success me-2"></i>
+                            <span>KrishiConnect</span>
+                        </div>
+                        <h3>Buyer Login</h3>
+                        <p class="text-muted">Access direct purchasing from farmers</p>
                     </div>
                     
                     <form id="login-form">
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i data-feather="mail" class="feather-small"></i>
+                                </span>
+                                <input type="email" class="form-control border-start-0" id="email" placeholder="Enter your email" required>
+                            </div>
                         </div>
                         
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                            <div class="input-group password-field">
+                                <span class="input-group-text bg-light">
+                                    <i data-feather="lock" class="feather-small"></i>
+                                </span>
+                                <input type="password" class="form-control border-start-0" id="password" placeholder="Enter your password" required>
+                                <button type="button" class="password-toggle" id="togglePassword">
+                                    <i data-feather="eye" class="feather-small"></i>
+                                </button>
+                            </div>
                         </div>
                         
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        <div class="remember-forgot">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                            <a href="#" id="forgot-password">Forgot password?</a>
                         </div>
                         
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-success" id="login-btn">
-                                <span class="spinner-border spinner-border-sm d-none" id="login-spinner"></span>
+                            <button type="submit" class="btn btn-success btn-login" id="login-btn">
+                                <span class="spinner-border spinner-border-sm d-none me-2" id="login-spinner"></span>
+                                <i data-feather="log-in" class="me-2"></i>
                                 Login
                             </button>
                         </div>
                         
-                        <div class="mt-3 text-center">
-                            <a href="#" id="forgot-password">Forgot password?</a>
+                        <div class="auth-divider">
+                            <span>Or continue with</span>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="button" class="social-auth-btn google-btn" id="google-login-btn">
+                                <i data-feather="chrome"></i> 
+                                Sign in with Google
+                            </button>
+                        </div>
+                        
+                        <div class="login-footer">
+                            <p>New to KrishiConnect? <a href="/api/buyers/register-view/">Create an account</a></p>
                         </div>
                     </form>
-                    
-                    <hr class="my-4">
-                    
-                    <div class="d-grid">
-                        <button type="button" class="btn btn-outline-dark" id="google-login-btn">
-                            <i data-feather="chrome"></i> Login with Google
-                        </button>
-                    </div>
                 </div>
-                <div class="card-footer text-center">
-                    <p class="mb-0">New buyer? <a href="/api/buyers/register-view/">Register here</a></p>
+            </div>
+            
+            <div class="col-lg-6 d-none d-lg-block" data-aos="fade-left">
+                <div class="buyer-login-img">
+                    <img src="https://images.unsplash.com/photo-1505816014357-96b5ff457e9a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80" class="img-fluid" alt="Buyer Login">
+                    
+                    <div class="features-list mt-4">
+                        <h4>Benefits for Buyers</h4>
+                        <ul class="list-unstyled">
+                            <li>
+                                <i data-feather="check-circle"></i> 
+                                <div>
+                                    <strong>Fresh Produce Direct from Farmers</strong>
+                                    <p class="text-muted mb-0">Get the freshest products with full traceability</p>
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="check-circle"></i>
+                                <div>
+                                    <strong>Better Pricing</strong> 
+                                    <p class="text-muted mb-0">No middlemen means better prices for quality produce</p>
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="check-circle"></i>
+                                <div>
+                                    <strong>Location-Based Matching</strong>
+                                    <p class="text-muted mb-0">Find farmers closest to you for reduced transportation costs</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
 
 {% block extra_js %}
@@ -75,22 +373,58 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <!-- Firebase Auth -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<!-- SweetAlert2 for better alerts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="/static/js/firebase-auth.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Feather icons again for dynamically shown content
+        feather.replace();
+        
         const form = document.getElementById('login-form');
         const loginBtn = document.getElementById('login-btn');
         const googleBtn = document.getElementById('google-login-btn');
         const loginSpinner = document.getElementById('login-spinner');
         const forgotPasswordLink = document.getElementById('forgot-password');
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const emailInput = document.getElementById('email');
+        
+        // Toggle password visibility
+        togglePasswordBtn.addEventListener('click', function() {
+            // Toggle the type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle the eye icon
+            const eyeIcon = this.querySelector('i');
+            if (type === 'password') {
+                eyeIcon.setAttribute('data-feather', 'eye');
+            } else {
+                eyeIcon.setAttribute('data-feather', 'eye-off');
+            }
+            
+            // Update feather icons
+            feather.replace();
+        });
         
         // Handle form submission
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            if (!email || !password) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing Information',
+                    text: 'Please enter both email and password',
+                    confirmButtonColor: '#2E7D32'
+                });
+                return;
+            }
             
             // Show spinner and disable button
             loginSpinner.classList.remove('d-none');
@@ -101,6 +435,16 @@
                 .then((userCredential) => {
                     // Signed in 
                     const user = userCredential.user;
+                    
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Successful',
+                        text: 'Welcome back to KrishiConnect!',
+                        confirmButtonColor: '#2E7D32',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     
                     // Check if user is a buyer by checking custom claims
                     return user.getIdTokenResult();
@@ -113,24 +457,35 @@
                         // Redirect to buyer dashboard
                         window.location.href = '/api/buyers/dashboard/';
                     } else {
-                        // Not a buyer, show error
-                        throw new Error('You are not registered as a buyer. Please register first.');
+                        // Not a buyer, redirect to registration
+                        window.location.href = '/api/buyers/register-view/';
                     }
                 })
                 .catch((error) => {
                     console.error('Login error:', error);
                     
                     let errorMessage = 'Failed to login. Please check your credentials.';
+                    let errorTitle = 'Login Failed';
                     
                     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        errorMessage = 'Invalid email or password.';
+                        errorMessage = 'The email or password you entered is incorrect. Please try again.';
+                        errorTitle = 'Invalid Credentials';
                     } else if (error.code === 'auth/too-many-requests') {
-                        errorMessage = 'Too many failed login attempts. Please try again later.';
+                        errorMessage = 'Too many failed login attempts. Please try again later or reset your password.';
+                        errorTitle = 'Account Temporarily Locked';
+                    } else if (error.code === 'auth/user-disabled') {
+                        errorMessage = 'Your account has been disabled. Please contact support.';
+                        errorTitle = 'Account Disabled';
                     } else if (error.message) {
                         errorMessage = error.message;
                     }
                     
-                    alert(errorMessage);
+                    Swal.fire({
+                        icon: 'error',
+                        title: errorTitle,
+                        text: errorMessage,
+                        confirmButtonColor: '#2E7D32'
+                    });
                     
                     // Hide spinner and enable button
                     loginSpinner.classList.add('d-none');
@@ -146,21 +501,55 @@
                 .then((result) => {
                     const user = result.user;
                     
+                    // Show waiting message
+                    Swal.fire({
+                        title: 'Checking your account...',
+                        text: 'Please wait while we verify your information',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
                     // Check if this user is already registered as a buyer
                     return checkBuyerRegistration(user);
                 })
                 .then((isRegistered) => {
                     if (isRegistered) {
-                        // Buyer is registered, redirect to dashboard
-                        window.location.href = '/api/buyers/dashboard/';
+                        // Buyer is registered, show success and redirect
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful',
+                            text: 'Welcome back to KrishiConnect!',
+                            confirmButtonColor: '#2E7D32',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = '/api/buyers/dashboard/';
+                        });
                     } else {
                         // New buyer, redirect to registration
-                        window.location.href = '/api/buyers/register-view/';
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Complete Registration',
+                            text: 'Please complete your buyer profile to continue',
+                            confirmButtonColor: '#2E7D32',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = '/api/buyers/register-view/';
+                        });
                     }
                 })
                 .catch((error) => {
                     console.error('Google sign-in error:', error);
-                    alert('Failed to sign in with Google: ' + error.message);
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Google Sign-In Failed',
+                        text: error.message || 'Failed to sign in with Google. Please try again later.',
+                        confirmButtonColor: '#2E7D32'
+                    });
                 });
         });
         
@@ -168,23 +557,70 @@
         forgotPasswordLink.addEventListener('click', function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
+            const email = emailInput.value;
             
             if (!email) {
-                alert('Please enter your email address first.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Email Required',
+                    text: 'Please enter your email address first',
+                    confirmButtonColor: '#2E7D32'
+                });
+                emailInput.focus();
                 return;
             }
             
-            if (confirm(`Send password reset email to ${email}?`)) {
-                firebase.auth().sendPasswordResetEmail(email)
-                    .then(() => {
-                        alert('Password reset email sent! Check your inbox.');
-                    })
-                    .catch((error) => {
-                        console.error('Password reset error:', error);
-                        alert('Failed to send password reset email: ' + error.message);
+            Swal.fire({
+                title: 'Reset Password?',
+                text: `We'll send a password reset link to: ${email}`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#2E7D32',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, send it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Sending Email',
+                        text: 'Please wait...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
                     });
-            }
+                    
+                    firebase.auth().sendPasswordResetEmail(email)
+                        .then(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Email Sent!',
+                                text: 'Check your inbox for the password reset link',
+                                confirmButtonColor: '#2E7D32'
+                            });
+                        })
+                        .catch((error) => {
+                            console.error('Password reset error:', error);
+                            
+                            let errorMessage = 'Failed to send password reset email. Please try again later.';
+                            
+                            if (error.code === 'auth/user-not-found') {
+                                errorMessage = 'No account found with this email address.';
+                            } else if (error.code === 'auth/invalid-email') {
+                                errorMessage = 'Please enter a valid email address.';
+                            } else if (error.message) {
+                                errorMessage = error.message;
+                            }
+                            
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Reset Failed',
+                                text: errorMessage,
+                                confirmButtonColor: '#2E7D32'
+                            });
+                        });
+                }
+            });
         });
         
         // Check if user is already registered as a buyer
