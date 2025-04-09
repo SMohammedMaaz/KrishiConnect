@@ -15,6 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize animation on scroll
     initScrollAnimations();
+    
+    // Initialize counter animations
+    initCounters();
+    
+    // Initialize weather and market updates
+    initRealTimeUpdates();
 });
 
 /**
@@ -245,3 +251,148 @@ function showToast(message, type = 'info') {
         document.head.append(style);
     }
 })();
+
+/**
+ * Initialize the counter animations on stats section
+ */
+function initCounters() {
+    const counters = document.querySelectorAll('.counter-value');
+    if (counters.length > 0) {
+        // Define the final counter values
+        const counterValues = {
+            'farmerCount': 15842,
+            'buyerCount': 3267,
+            'productCount': 24936
+        };
+        
+        // Create an intersection observer to trigger counter animation when in viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const id = counter.id;
+                    const targetValue = counterValues[id] || parseInt(counter.innerText) || 0;
+                    
+                    // Only animate if not already animated
+                    if (counter.innerText === '0') {
+                        animateCounter(counter, 0, targetValue, 2000);
+                    }
+                    
+                    // Unobserve after animation starts
+                    observer.unobserve(counter);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        // Observe each counter element
+        counters.forEach(counter => {
+            // Skip elements with non-numeric final values
+            if (counter.innerText.indexOf('+') === -1) {
+                observer.observe(counter);
+            }
+        });
+    }
+}
+
+/**
+ * Animate a counter from start to end value
+ * @param {HTMLElement} element - The counter element
+ * @param {number} start - Start value
+ * @param {number} end - End value
+ * @param {number} duration - Animation duration in milliseconds
+ */
+function animateCounter(element, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const currentValue = Math.floor(progress * (end - start) + start);
+        element.innerText = currentValue.toLocaleString('en-IN');
+        
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
+/**
+ * Initialize real-time weather and market updates
+ */
+function initRealTimeUpdates() {
+    // Weather dropdown handler
+    const weatherDropdown = document.querySelector('.weather-forecast .dropdown-menu');
+    if (weatherDropdown) {
+        weatherDropdown.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const selectedLocation = this.textContent;
+                this.closest('.dropdown').querySelector('.dropdown-toggle').textContent = selectedLocation;
+                
+                // In a real implementation, this would fetch weather data for the selected location
+                // For demo, just show a loading state and then update with simulated data
+                simulateWeatherUpdate(selectedLocation);
+            });
+        });
+    }
+    
+    // Market timeframe dropdown handler
+    const marketDropdown = document.querySelector('.market-trends .dropdown-menu');
+    if (marketDropdown) {
+        marketDropdown.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const selectedTimeframe = this.textContent;
+                this.closest('.dropdown').querySelector('.dropdown-toggle').textContent = selectedTimeframe;
+                
+                // In a real implementation, this would fetch market data for the selected timeframe
+                // For demo, show loading state
+                const chartContainer = document.querySelector('.market-trends .chart-container');
+                if (chartContainer) {
+                    chartContainer.classList.add('loading');
+                    setTimeout(() => {
+                        chartContainer.classList.remove('loading');
+                        // Chart would be updated with new data in a real implementation
+                    }, 1500);
+                }
+            });
+        });
+    }
+}
+
+/**
+ * Simulate weather data update for demo purposes
+ * @param {string} location - Selected location name
+ */
+function simulateWeatherUpdate(location) {
+    const weatherContainer = document.querySelector('.current-weather');
+    const forecastContainer = document.querySelector('.forecast');
+    
+    if (weatherContainer && forecastContainer) {
+        // Add loading state
+        weatherContainer.classList.add('loading');
+        forecastContainer.classList.add('loading');
+        
+        // Simulate API delay
+        setTimeout(() => {
+            // Remove loading state
+            weatherContainer.classList.remove('loading');
+            forecastContainer.classList.remove('loading');
+            
+            // Update weather advisory based on location (for demo)
+            const advisoryElement = document.querySelector('.farming-advice p');
+            if (advisoryElement) {
+                if (location.includes('Delhi')) {
+                    advisoryElement.textContent = 'Hot and dry conditions expected. Consider evening irrigation for crops. Protect seedlings from heat stress.';
+                } else if (location.includes('Mumbai')) {
+                    advisoryElement.textContent = 'Monsoon patterns predicted with high humidity. Watch for fungal diseases in crops. Good time for rice cultivation.';
+                } else if (location.includes('Chennai')) {
+                    advisoryElement.textContent = 'Moderate temperatures with occasional showers. Ideal conditions for vegetable farming. Monitor soil moisture levels.';
+                }
+                // Default Bangalore advisory is already set in the HTML
+            }
+            
+            // In a real app, we would update the weather icon, temperature, and forecast
+        }, 1000);
+    }
+}
