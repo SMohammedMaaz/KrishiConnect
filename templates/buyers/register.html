@@ -4,151 +4,294 @@
 
 {% block extra_css %}
 <style>
-    .register-container {
-        max-width: 650px;
-        margin: 0 auto;
+    .container {
+        min-height: 85vh;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
     }
-    .required-field::after {
-        content: "*";
-        color: red;
-        margin-left: 3px;
+    .register-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        border-radius: 12px;
+        background-color: white;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+    .auth-logo {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        font-weight: 700;
+        font-size: 1.3rem;
+    }
+    .form-image img {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        max-height: 300px;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
+    .register-steps .step {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .register-steps .step-number {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-weight: 600;
+    }
+    .register-steps .step-text {
+        flex-grow: 1;
+    }
+    .profile-image-upload {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 20px;
+    }
+    .profile-image-preview {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 2px solid #e9ecef;
+    }
+    .profile-image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .profile-image-label {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    .profile-image-input {
+        display: none;
+    }
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        cursor: pointer;
+        color: #6c757d;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="register-container">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">Buyer Registration</h3>
+<div class="container">
+    <div class="register-container" data-aos="fade-up">
+        <div class="auth-logo">
+            <i data-feather="leaf" class="text-success me-2"></i>
+            <span>KrishiConnect</span>
+        </div>
+        
+        <div class="text-center">
+            <h2>Buyer Registration</h2>
+            <p class="text-muted">Create your buyer account and start purchasing directly from farmers</p>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="form-image text-center">
+                    <img src="https://images.unsplash.com/photo-1589927986089-35812388d1f4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80" class="img-fluid" alt="Buyer Registration">
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-info">
-                        <i data-feather="info"></i> 
-                        Complete your profile to start purchasing directly from farmers.
+                
+                <div class="register-steps">
+                    <h5>Registration Steps:</h5>
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">
+                            <strong>Create Your Account</strong>
+                            <p class="text-muted mb-0 small">Enter your details and credentials</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">
+                            <strong>Complete Your Profile</strong>
+                            <p class="text-muted mb-0 small">Add your business information</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            <strong>Set Your Preferences</strong>
+                            <p class="text-muted mb-0 small">Choose product categories you're interested in</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-text">
+                            <strong>Start Browsing Products</strong>
+                            <p class="text-muted mb-0 small">Find and connect with farmers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <form id="register-form">
+                    <div class="profile-image-upload">
+                        <div class="profile-image-preview" id="profilePreview">
+                            <i data-feather="user" style="width: 50px; height: 50px; color: #adb5bd;"></i>
+                        </div>
+                        <label for="profileImage" class="profile-image-label">
+                            <i data-feather="camera" class="feather-small"></i>
+                        </label>
+                        <input type="file" id="profileImage" class="profile-image-input" accept="image/*">
                     </div>
                     
-                    <form id="registration-form">
-                        <h5 class="mb-3">Account Details</h5>
-                        
-                        <div class="row mb-3" id="email-password-section">
-                            <div class="col-md-6">
-                                <label for="email" class="form-label required-field">Email Address</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="password" class="form-label required-field">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                                <small class="form-text text-muted">Min 8 characters with letters and numbers</small>
-                            </div>
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text">+91</span>
+                            <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number" maxlength="10" pattern="[0-9]{10}" required>
                         </div>
-                        
-                        <h5 class="mb-3 mt-4">Personal Details</h5>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="fullName" class="form-label required-field">Full Name</label>
-                                <input type="text" class="form-control" id="fullName" name="full_name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="phoneNumber" class="form-label required-field">Phone Number</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">+91</span>
-                                    <input type="tel" class="form-control" id="phoneNumber" name="phone_number" maxlength="10" pattern="[0-9]{10}" required>
-                                </div>
-                            </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="company" class="form-label">Company/Business Name (Optional)</label>
+                        <input type="text" class="form-control" id="company" placeholder="Enter your company or business name">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="buyerType" class="form-label">Buyer Type</label>
+                        <select class="form-select" id="buyerType" required>
+                            <option value="">Select buyer type</option>
+                            <option value="Individual">Individual</option>
+                            <option value="Business">Business</option>
+                            <option value="Government">Government</option>
+                        </select>
+                    </div>
+                    
+                    <h5 class="mt-4 mb-3">Address Details</h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label for="street" class="form-label">Street Address</label>
+                            <input type="text" class="form-control" id="street" placeholder="Enter street address" required>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="buyerType" class="form-label required-field">Buyer Type</label>
-                            <select class="form-select" id="buyerType" name="buyer_type" required>
-                                <option value="Individual">Individual</option>
-                                <option value="Business">Business/Company</option>
-                                <option value="Government">Government</option>
+                        <div class="col-md-6">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" placeholder="Enter city" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="district" class="form-label">District</label>
+                            <input type="text" class="form-control" id="district" placeholder="Enter district" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="state" class="form-label">State</label>
+                            <select class="form-select" id="state" required>
+                                <option value="">Select State</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
                             </select>
                         </div>
-                        
-                        <div class="mb-3 d-none" id="company-field">
-                            <label for="companyName" class="form-label">Company/Business Name</label>
-                            <input type="text" class="form-control" id="companyName" name="company_name">
+                    </div>
+                    
+                    <h5 class="mt-4 mb-3">Security</h5>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="position-relative">
+                            <input type="password" class="form-control" id="password" placeholder="Create a password" required minlength="8">
+                            <span class="password-toggle" id="password-toggle">
+                                <i data-feather="eye" id="show-password"></i>
+                                <i data-feather="eye-off" id="hide-password" style="display: none;"></i>
+                            </span>
                         </div>
-                        
-                        <h5 class="mb-3 mt-4">Address Details</h5>
-                        
-                        <div class="mb-3">
-                            <label for="street" class="form-label required-field">Street Address</label>
-                            <input type="text" class="form-control" id="street" name="street" required>
+                        <div class="form-text">Password must be at least 8 characters long</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <div class="position-relative">
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label for="city" class="form-label required-field">City</label>
-                                <input type="text" class="form-control" id="city" name="city" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="district" class="form-label required-field">District</label>
-                                <input type="text" class="form-control" id="district" name="district" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="state" class="form-label required-field">State</label>
-                                <select class="form-select" id="state" name="state" required>
-                                    <option value="">Select State</option>
-                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                    <option value="Assam">Assam</option>
-                                    <option value="Bihar">Bihar</option>
-                                    <option value="Chhattisgarh">Chhattisgarh</option>
-                                    <option value="Goa">Goa</option>
-                                    <option value="Gujarat">Gujarat</option>
-                                    <option value="Haryana">Haryana</option>
-                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
-                                    <option value="Jharkhand">Jharkhand</option>
-                                    <option value="Karnataka">Karnataka</option>
-                                    <option value="Kerala">Kerala</option>
-                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                    <option value="Maharashtra">Maharashtra</option>
-                                    <option value="Manipur">Manipur</option>
-                                    <option value="Meghalaya">Meghalaya</option>
-                                    <option value="Mizoram">Mizoram</option>
-                                    <option value="Nagaland">Nagaland</option>
-                                    <option value="Odisha">Odisha</option>
-                                    <option value="Punjab">Punjab</option>
-                                    <option value="Rajasthan">Rajasthan</option>
-                                    <option value="Sikkim">Sikkim</option>
-                                    <option value="Tamil Nadu">Tamil Nadu</option>
-                                    <option value="Telangana">Telangana</option>
-                                    <option value="Tripura">Tripura</option>
-                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                    <option value="Uttarakhand">Uttarakhand</option>
-                                    <option value="West Bengal">West Bengal</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="locationConsent" required>
-                                    <label class="form-check-label" for="locationConsent">
-                                        I consent to share my location to help find nearby products
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-success" id="register-btn">
-                                <span class="spinner-border spinner-border-sm d-none" id="register-spinner"></span>
-                                Register
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <p class="mb-0">Already registered? <a href="/api/buyers/login-view/">Login here</a></p>
-                </div>
+                    </div>
+                    
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="termsConditions" required>
+                        <label class="form-check-label" for="termsConditions">
+                            I agree to the <a href="#" class="text-success">Terms & Conditions</a> and <a href="#" class="text-success">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="locationConsent" checked>
+                        <label class="form-check-label" for="locationConsent">
+                            Allow access to my current location for better product recommendations
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success" id="registerBtn">
+                            <span id="registerSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Create Account
+                        </button>
+                        <a href="/api/buyers/login-view/" class="btn btn-outline-secondary">Already have an account? Login</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -156,138 +299,137 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Firebase App (the core Firebase SDK) -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<!-- Firebase Auth -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
 
-<script src="/static/js/firebase-auth.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const registrationForm = document.getElementById('registration-form');
-        const registerBtn = document.getElementById('register-btn');
-        const registerSpinner = document.getElementById('register-spinner');
-        const buyerTypeSelect = document.getElementById('buyerType');
-        const companyField = document.getElementById('company-field');
-        const emailPasswordSection = document.getElementById('email-password-section');
+        // Initialize Firebase
+        firebase.initializeApp(window.firebaseConfig);
         
-        // Change in buyer type
-        buyerTypeSelect.addEventListener('change', function() {
-            if (this.value === 'Business' || this.value === 'Government') {
-                companyField.classList.remove('d-none');
-                document.getElementById('companyName').required = true;
+        // Profile image preview
+        const profileImage = document.getElementById('profileImage');
+        const profilePreview = document.getElementById('profilePreview');
+        
+        profileImage.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePreview.innerHTML = `<img src="${e.target.result}" alt="Profile Preview">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Password visibility toggle
+        const passwordField = document.getElementById('password');
+        const passwordToggle = document.getElementById('password-toggle');
+        const showPasswordIcon = document.getElementById('show-password');
+        const hidePasswordIcon = document.getElementById('hide-password');
+        
+        passwordToggle.addEventListener('click', function() {
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                showPasswordIcon.style.display = 'none';
+                hidePasswordIcon.style.display = 'block';
             } else {
-                companyField.classList.add('d-none');
-                document.getElementById('companyName').required = false;
+                passwordField.type = 'password';
+                showPasswordIcon.style.display = 'block';
+                hidePasswordIcon.style.display = 'none';
             }
         });
         
-        // Check if user is already authenticated
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                // User is already logged in
-                emailPasswordSection.classList.add('d-none');
-                document.getElementById('email').value = user.email || '';
-                document.getElementById('email').readOnly = true;
-            }
+        // Phone number input formatting
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
         });
         
-        // Handle form submission
-        registrationForm.addEventListener('submit', function(e) {
+        // Registration form submission
+        const registerForm = document.getElementById('register-form');
+        const registerBtn = document.getElementById('registerBtn');
+        const registerSpinner = document.getElementById('registerSpinner');
+        
+        registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            registerSpinner.classList.remove('d-none');
-            registerBtn.disabled = true;
+            // Validate passwords match
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
             
-            // Get form data
-            const formData = {
-                email: document.getElementById('email').value,
-                full_name: document.getElementById('fullName').value,
-                phone_number: document.getElementById('phoneNumber').value,
-                buyer_type: document.getElementById('buyerType').value,
-                company_name: document.getElementById('companyName').value,
-                street: document.getElementById('street').value,
-                city: document.getElementById('city').value,
-                district: document.getElementById('district').value,
-                state: document.getElementById('state').value
-            };
-            
-            // Try to get current position
-            if (navigator.geolocation && document.getElementById('locationConsent').checked) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        // Add coordinates to form data
-                        formData.latitude = position.coords.latitude;
-                        formData.longitude = position.coords.longitude;
-                        registerBuyer(formData);
-                    },
-                    (error) => {
-                        console.error('Geolocation error:', error);
-                        // Continue without coordinates
-                        registerBuyer(formData);
-                    }
-                );
-            } else {
-                // Continue without coordinates
-                registerBuyer(formData);
+            if (password !== confirmPassword) {
+                alert('Passwords do not match. Please try again.');
+                return;
             }
-        });
-        
-        // Register buyer function
-        function registerBuyer(formData) {
-            firebase.auth().onAuthStateChanged(function(user) {
-                if (user) {
-                    // User is already logged in, proceed with registration
-                    completeRegistration(user, formData);
-                } else {
-                    // User needs to sign up first
-                    const email = formData.email;
-                    const password = document.getElementById('password').value;
+            
+            // Show loading state
+            registerBtn.disabled = true;
+            registerSpinner.classList.remove('d-none');
+            
+            // Create Firebase user
+            const email = document.getElementById('email').value;
+            
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    // Get user from Firebase
+                    const user = userCredential.user;
                     
-                    if (!password) {
-                        alert('Please enter a password.');
-                        registerSpinner.classList.add('d-none');
-                        registerBtn.disabled = false;
-                        return;
+                    // Get ID token
+                    return user.getIdToken().then(token => {
+                        return { user, token };
+                    });
+                })
+                .then(({ user, token }) => {
+                    // Get location if allowed
+                    if (document.getElementById('locationConsent').checked && navigator.geolocation) {
+                        return new Promise((resolve, reject) => {
+                            navigator.geolocation.getCurrentPosition(
+                                position => {
+                                    resolve({
+                                        user,
+                                        token,
+                                        latitude: position.coords.latitude,
+                                        longitude: position.coords.longitude
+                                    });
+                                },
+                                error => {
+                                    console.error('Geolocation error:', error);
+                                    resolve({ user, token }); // Continue without coordinates
+                                }
+                            );
+                        });
+                    } else {
+                        return { user, token };
+                    }
+                })
+                .then(data => {
+                    // Prepare form data
+                    const formData = {
+                        email: document.getElementById('email').value,
+                        full_name: document.getElementById('fullName').value,
+                        phone_number: document.getElementById('phone').value,
+                        company_name: document.getElementById('company').value || '',
+                        buyer_type: document.getElementById('buyerType').value,
+                        street: document.getElementById('street').value,
+                        city: document.getElementById('city').value,
+                        district: document.getElementById('district').value,
+                        state: document.getElementById('state').value,
+                    };
+                    
+                    // Add coordinates if available
+                    if (data.latitude && data.longitude) {
+                        formData.latitude = data.latitude;
+                        formData.longitude = data.longitude;
                     }
                     
-                    firebase.auth().createUserWithEmailAndPassword(email, password)
-                        .then((userCredential) => {
-                            const user = userCredential.user;
-                            completeRegistration(user, formData);
-                        })
-                        .catch((error) => {
-                            console.error('Error creating account:', error);
-                            
-                            let errorMessage = 'Failed to create account.';
-                            
-                            if (error.code === 'auth/email-already-in-use') {
-                                errorMessage = 'This email is already in use. Please login or use a different email.';
-                            } else if (error.code === 'auth/weak-password') {
-                                errorMessage = 'Password is too weak. Please use a stronger password.';
-                            } else if (error.message) {
-                                errorMessage = error.message;
-                            }
-                            
-                            alert(errorMessage);
-                            
-                            registerSpinner.classList.add('d-none');
-                            registerBtn.disabled = false;
-                        });
-                }
-            });
-        }
-        
-        // Complete registration with Firestore
-        function completeRegistration(user, formData) {
-            user.getIdToken()
-                .then(token => {
                     // Register buyer
                     return fetch('/api/buyers/register/', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + token
+                            'Authorization': 'Bearer ' + data.token
                         },
                         body: JSON.stringify(formData)
                     });
@@ -300,19 +442,67 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        // Registration successful, redirect to dashboard
-                        window.location.href = '/api/buyers/dashboard/';
+                        // Upload profile image if selected
+                        const fileInput = document.getElementById('profileImage');
+                        if (fileInput.files.length > 0) {
+                            uploadProfileImage(firebase.auth().currentUser.uid, fileInput.files[0])
+                                .then(() => {
+                                    // Registration successful, redirect to dashboard
+                                    window.location.href = '/api/buyers/dashboard/';
+                                })
+                                .catch(error => {
+                                    console.error('Profile image upload error:', error);
+                                    // Still redirect to dashboard even if image upload fails
+                                    window.location.href = '/api/buyers/dashboard/';
+                                });
+                        } else {
+                            // No profile image, redirect to dashboard
+                            window.location.href = '/api/buyers/dashboard/';
+                        }
                     } else {
                         throw new Error(data.message || 'Registration failed');
                     }
                 })
                 .catch(error => {
                     console.error('Error registering buyer:', error);
-                    alert('Error registering: ' + error.message);
+                    
+                    let errorMessage = 'Error registering: ';
+                    
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage += 'Email is already in use. Please login or use a different email.';
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMessage += 'Password is too weak. Please choose a stronger password.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage += 'Email address is invalid.';
+                    } else {
+                        errorMessage += error.message;
+                    }
+                    
+                    alert(errorMessage);
                     
                     registerSpinner.classList.add('d-none');
                     registerBtn.disabled = false;
                 });
+        });
+        
+        // Upload profile image function
+        function uploadProfileImage(userId, file) {
+            const formData = new FormData();
+            formData.append('profile_image', file);
+            
+            return fetch(`/api/buyers/profile/upload-image/${userId}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + firebase.auth().currentUser.token
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Image upload failed');
+                }
+                return response.json();
+            });
         }
     });
 </script>

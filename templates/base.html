@@ -5,201 +5,215 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}KrishiConnect{% endblock %}</title>
     
+    <!-- Favicon -->
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Feather Icons -->
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <!-- AOS (Animate On Scroll) CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/css/main.css">
+    
+    <!-- Chatbot CSS -->
     <link rel="stylesheet" href="/static/css/chatbot.css">
+    
+    {% block extra_css %}{% endblock %}
     
     <style>
         :root {
-            --primary-color: #2E7D32;
-            --secondary-color: #81C784;
-            --accent-color: #FFC107;
-            --text-dark: #212121;
-            --text-light: #757575;
-            --bg-light: #F8F9FA;
+            --primary-color: #28a745;
+            --secondary-color: #6c757d;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
         }
         
         body {
             font-family: 'Poppins', sans-serif;
-            color: var(--text-dark);
-            background-color: var(--bg-light);
+            background-color: #fafafa;
+            color: #333;
         }
         
+        /* Navbar Styles */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+        }
         .navbar-brand {
             font-weight: 700;
-            letter-spacing: 0.5px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
         }
-        
-        .brand-icon {
-            color: var(--accent-color);
+        .nav-link {
+            font-weight: 500;
+            margin-left: 10px;
+            padding: 8px 15px !important;
+            border-radius: 5px;
+            transition: all 0.3s;
         }
-        
-        .navbar {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .nav-link:hover {
+            background-color: #f8f9fa;
         }
-        
-        .navbar-dark.bg-success {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+        .navbar-nav .btn {
+            margin-left: 10px;
         }
-        
-        .nav-item {
-            position: relative;
-        }
-        
-        .nav-item:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            background-color: white;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: width 0.3s;
-        }
-        
-        .nav-item:hover:after {
-            width: 60%;
-        }
-        
         .dropdown-menu {
             border: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 10px;
         }
-        
         .dropdown-item {
-            padding: 10px 20px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
         }
-        
         .dropdown-item:hover {
-            background-color: rgba(46, 125, 50, 0.1);
+            background-color: #f8f9fa;
+        }
+        .dropdown-item.active, .dropdown-item:active {
+            background-color: var(--primary-color);
         }
         
-        main {
-            min-height: 70vh;
+        /* Footer Styles */
+        .footer {
+            background-color: #212529;
+            color: #fff;
+            padding: 60px 0 30px;
         }
-        
-        footer {
-            border-top: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+        .footer h5 {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 20px;
         }
-        
-        footer a {
-            color: var(--primary-color);
+        .footer ul {
+            padding-left: 0;
+            list-style: none;
+        }
+        .footer ul li {
+            margin-bottom: 10px;
+        }
+        .footer a {
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             transition: color 0.3s;
         }
-        
-        footer a:hover {
-            color: var(--secondary-color);
-            text-decoration: underline;
+        .footer a:hover {
+            color: #fff;
         }
-        
-        .btn-success, .bg-success {
-            background-color: var(--primary-color) !important;
-            border-color: var(--primary-color) !important;
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
         }
-        
-        .btn-success:hover {
-            background-color: #1B5E20 !important;
-            border-color: #1B5E20 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
-        }
-        
-        .btn-outline-success {
-            color: var(--primary-color) !important;
-            border-color: var(--primary-color) !important;
-        }
-        
-        .btn-outline-success:hover {
-            background-color: var(--primary-color) !important;
-            color: white !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
-        }
-        
-        .btn {
-            border-radius: 8px;
-            padding: 8px 20px;
-            transition: all 0.3s;
-        }
-        
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        
-        .social-icons a {
+        .social-links a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 36px;
             height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+        .social-links a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        /* Utility Classes */
+        .btn {
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+        .btn-success {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-outline-success {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-outline-success:hover {
             background-color: var(--primary-color);
             color: white;
-            border-radius: 50%;
-            margin-right: 10px;
-            transition: transform 0.3s;
         }
-        
-        .social-icons a:hover {
-            transform: scale(1.1);
+        .bg-success {
+            background-color: var(--primary-color) !important;
         }
-        
         .text-success {
             color: var(--primary-color) !important;
         }
         
-        /* Custom scroll bar */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
-        
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
-        
         ::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 10px;
+            background: #ddd;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ccc;
         }
         
-        ::-webkit-scrollbar-thumb:hover {
-            background: #1B5E20;
+        /* Small Font Size for Feather Icons inside Buttons */
+        .feather-small {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Page Container */
+        .page-container {
+            min-height: 70vh;
+            padding: 40px 0;
+        }
+        
+        /* Tooltip Styles */
+        .custom-tooltip {
+            position: relative;
+        }
+        .custom-tooltip:hover:after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 100;
         }
     </style>
-    
-    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="/">
-                <span class="brand-icon me-2"><i data-feather="leaf"></i></span> KrishiConnect
+            <a class="navbar-brand" href="/">
+                <i data-feather="leaf" class="text-success me-2"></i>
+                KrishiConnect
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -207,190 +221,214 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="/">
-                            <i data-feather="home" class="me-1"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="/api/buyers/browse-products/">
-                            <i data-feather="search" class="me-1"></i> Browse Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="#about">
-                            <i data-feather="info" class="me-1"></i> About
-                        </a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                            <i data-feather="users" class="me-1"></i> For Farmers
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/api/farmers/login/"><i data-feather="log-in" class="feather-small me-2"></i> Login</a></li>
-                            <li><a class="dropdown-item" href="/api/farmers/register-view/"><i data-feather="user-plus" class="feather-small me-2"></i> Register</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/api/farmers/dashboard/"><i data-feather="layout" class="feather-small me-2"></i> Dashboard</a></li>
-                        </ul>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                            <i data-feather="shopping-bag" class="me-1"></i> For Buyers
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            Products
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/api/buyers/login-view/"><i data-feather="log-in" class="feather-small me-2"></i> Login</a></li>
-                            <li><a class="dropdown-item" href="/api/buyers/register-view/"><i data-feather="user-plus" class="feather-small me-2"></i> Register</a></li>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/api/buyers/browse-products/?category=Grains">Grains</a></li>
+                            <li><a class="dropdown-item" href="/api/buyers/browse-products/?category=Vegetables">Vegetables</a></li>
+                            <li><a class="dropdown-item" href="/api/buyers/browse-products/?category=Fruits">Fruits</a></li>
+                            <li><a class="dropdown-item" href="/api/buyers/browse-products/?category=Pulses">Pulses</a></li>
+                            <li><a class="dropdown-item" href="/api/buyers/browse-products/?category=Spices">Spices</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/api/buyers/dashboard/"><i data-feather="layout" class="feather-small me-2"></i> Dashboard</a></li>
+                            <li><a class="dropdown-item" href="/api/buyers/browse-products/">All Products</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about/">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact/">Contact</a>
+                    </li>
                 </ul>
+                <div class="d-flex align-items-center">
+                    <div id="user-auth-buttons">
+                        <a href="/api/farmers/login/" class="btn btn-outline-success me-2">
+                            <i data-feather="user" class="feather-small me-1"></i> Farmer Login
+                        </a>
+                        <a href="/api/buyers/login-view/" class="btn btn-success">
+                            <i data-feather="shopping-bag" class="feather-small me-1"></i> Buyer Login
+                        </a>
+                    </div>
+                    <div id="user-profile-dropdown" class="dropdown d-none">
+                        <a class="btn btn-outline-success dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                            <i data-feather="user" class="feather-small me-1"></i> <span id="user-name">User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/dashboard/"><i data-feather="grid" class="feather-small me-2"></i> Dashboard</a></li>
+                            <li><a class="dropdown-item" href="/profile/"><i data-feather="user" class="feather-small me-2"></i> Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i data-feather="log-out" class="feather-small me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
-
-    <main class="container mt-4 mb-5">
+    
+    <!-- Main Content -->
+    <main>
         {% block content %}{% endblock %}
     </main>
-
-    <footer class="bg-white py-5">
+    
+    <!-- Footer -->
+    <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="brand-icon me-2" style="color: #2E7D32;"><i data-feather="leaf"></i></span>
-                        <h4 class="mb-0">KrishiConnect</h4>
-                    </div>
-                    <p class="text-muted">Revolutionizing agricultural commerce by directly connecting farmers with buyers through advanced technology.</p>
-                    <div class="social-icons mt-3">
+                <div class="col-lg-4 mb-4">
+                    <h5>About KrishiConnect</h5>
+                    <p>KrishiConnect is a revolutionary platform that bridges the gap between farmers and buyers, eliminating middlemen and ensuring fair prices.</p>
+                    <div class="social-links">
                         <a href="#"><i data-feather="facebook"></i></a>
                         <a href="#"><i data-feather="twitter"></i></a>
                         <a href="#"><i data-feather="instagram"></i></a>
                         <a href="#"><i data-feather="linkedin"></i></a>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
-                    <h5 class="mb-3">Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="/"><i data-feather="chevron-right" class="feather-small me-1"></i> Home</a></li>
-                        <li class="mb-2"><a href="/api/buyers/browse-products/"><i data-feather="chevron-right" class="feather-small me-1"></i> Browse Products</a></li>
-                        <li class="mb-2"><a href="/api/farmers/login/"><i data-feather="chevron-right" class="feather-small me-1"></i> Farmer Login</a></li>
-                        <li class="mb-2"><a href="/api/buyers/login-view/"><i data-feather="chevron-right" class="feather-small me-1"></i> Buyer Login</a></li>
+                <div class="col-lg-2 col-md-3 mb-4">
+                    <h5>For Farmers</h5>
+                    <ul>
+                        <li><a href="/api/farmers/register-view/">Register</a></li>
+                        <li><a href="/api/farmers/login/">Login</a></li>
+                        <li><a href="/how-it-works-farmer/">How It Works</a></li>
+                        <li><a href="/farmer-faqs/">FAQs</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                    <h5 class="mb-3">Our Services</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#"><i data-feather="check-circle" class="feather-small me-1"></i> Direct Market Access</a></li>
-                        <li class="mb-2"><a href="#"><i data-feather="check-circle" class="feather-small me-1"></i> AI Crop Suggestions</a></li>
-                        <li class="mb-2"><a href="#"><i data-feather="check-circle" class="feather-small me-1"></i> Secure Transactions</a></li>
-                        <li class="mb-2"><a href="#"><i data-feather="check-circle" class="feather-small me-1"></i> Quality Verification</a></li>
+                <div class="col-lg-2 col-md-3 mb-4">
+                    <h5>For Buyers</h5>
+                    <ul>
+                        <li><a href="/api/buyers/register-view/">Register</a></li>
+                        <li><a href="/api/buyers/login-view/">Login</a></li>
+                        <li><a href="/api/buyers/browse-products/">Browse Products</a></li>
+                        <li><a href="/buyer-faqs/">FAQs</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="mb-3">Contact Us</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2 d-flex align-items-center">
-                            <i data-feather="map-pin" class="feather-small me-2"></i>
-                            <span>123 Agri Tower, Tech Park, Bangalore - 560001</span>
-                        </li>
-                        <li class="mb-2 d-flex align-items-center">
-                            <i data-feather="mail" class="feather-small me-2"></i>
-                            <span>info@krishiconnect.com</span>
-                        </li>
-                        <li class="mb-2 d-flex align-items-center">
-                            <i data-feather="phone" class="feather-small me-2"></i>
-                            <span>+91 9876543210</span>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <i data-feather="clock" class="feather-small me-2"></i>
-                            <span>Mon-Fri: 9am - 6pm</span>
-                        </li>
+                <div class="col-lg-2 col-md-3 mb-4">
+                    <h5>Resources</h5>
+                    <ul>
+                        <li><a href="/blog/">Blog</a></li>
+                        <li><a href="/market-trends/">Market Trends</a></li>
+                        <li><a href="/government-schemes/">Govt. Schemes</a></li>
+                        <li><a href="/weather/">Weather Updates</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-3 mb-4">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="/about/">About Us</a></li>
+                        <li><a href="/contact/">Contact Us</a></li>
+                        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+                        <li><a href="/terms-conditions/">Terms of Use</a></li>
                     </ul>
                 </div>
             </div>
-            <hr>
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="mb-md-0 text-center text-md-start">&copy; 2025 KrishiConnect. All rights reserved.</p>
+            <div class="row footer-bottom">
+                <div class="col-md-6 text-center text-md-start">
+                    <p>&copy; 2023 KrishiConnect. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <ul class="list-inline mb-0">
-                        <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-                        <li class="list-inline-item">•</li>
-                        <li class="list-inline-item"><a href="#">Terms of Use</a></li>
-                        <li class="list-inline-item">•</li>
-                        <li class="list-inline-item"><a href="#">FAQ</a></li>
-                    </ul>
+                    <p>Made with <i data-feather="heart" class="text-danger" style="width: 16px; height: 16px;"></i> in India</p>
                 </div>
             </div>
         </div>
     </footer>
-
-    <!-- Back to top button -->
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center" id="back-to-top">
-        <i data-feather="arrow-up"></i>
-    </a>
-
-    <!-- Bootstrap JS -->
+    
+    <!-- AI Assistant (Chatbot) -->
+    <div id="krishibot-container"></div>
+    
+    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- AOS Animation JS -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     
-    <!-- Initialize Feather Icons -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize feather icons
-            feather.replace();
-            
-            // Initialize AOS animations
-            AOS.init({
-                duration: 800,
-                easing: 'ease-in-out',
-                once: true
-            });
-            
-            // Back to top button
-            const backToTopButton = document.getElementById('back-to-top');
-            if (backToTopButton) {
-                window.addEventListener('scroll', function() {
-                    if (window.pageYOffset > 300) {
-                        backToTopButton.classList.add('show');
-                    } else {
-                        backToTopButton.classList.remove('show');
-                    }
-                });
-                
-                backToTopButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.scrollTo({top: 0, behavior: 'smooth'});
-                });
-            }
-        });
-    </script>
+    <!-- AOS (Animate On Scroll) -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     
-    <!-- Global Firebase Config -->
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    
+    <!-- Firebase Config -->
     <script>
-        // Make Firebase configuration available globally
         window.firebaseConfig = {
-            apiKey: "{{ firebase_config.apiKey }}",
-            authDomain: "{{ firebase_config.authDomain }}",
-            projectId: "{{ firebase_config.projectId }}",
-            storageBucket: "{{ firebase_config.storageBucket }}",
-            messagingSenderId: "{{ firebase_config.messagingSenderId }}",
-            appId: "{{ firebase_config.appId }}",
-            measurementId: "{{ firebase_config.measurementId }}",
-            databaseURL: "{{ firebase_config.databaseURL }}"
+            apiKey: "{{ firebase_api_key }}",
+            authDomain: "{{ firebase_project_id }}.firebaseapp.com",
+            projectId: "{{ firebase_project_id }}",
+            storageBucket: "{{ firebase_project_id }}.appspot.com",
+            appId: "{{ firebase_app_id }}",
         };
     </script>
     
-    <!-- Custom JS -->
+    <!-- Custom Scripts -->
     <script src="/static/js/main.js"></script>
-    
-    <!-- KrishiBot AI Assistant -->
     <script src="/static/js/chatbot.js"></script>
+    
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+        
+        // Initialize Firebase Auth listener (simple version for nav bar)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Firebase is loaded
+            if (typeof firebase !== 'undefined') {
+                try {
+                    // Initialize Firebase if not already done
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(window.firebaseConfig);
+                    }
+                    
+                    // Listen for auth state changes
+                    firebase.auth().onAuthStateChanged(function(user) {
+                        const authButtons = document.getElementById('user-auth-buttons');
+                        const profileDropdown = document.getElementById('user-profile-dropdown');
+                        const userName = document.getElementById('user-name');
+                        
+                        if (user) {
+                            // User is signed in
+                            authButtons.classList.add('d-none');
+                            profileDropdown.classList.remove('d-none');
+                            
+                            // Update user name
+                            userName.textContent = user.displayName || user.email || 'User';
+                            
+                            // Set up logout button
+                            document.getElementById('logout-btn').addEventListener('click', function(e) {
+                                e.preventDefault();
+                                firebase.auth().signOut().then(() => {
+                                    window.location.href = '/';
+                                }).catch((error) => {
+                                    console.error('Error signing out:', error);
+                                });
+                            });
+                        } else {
+                            // User is signed out
+                            authButtons.classList.remove('d-none');
+                            profileDropdown.classList.add('d-none');
+                        }
+                    });
+                    
+                } catch (error) {
+                    console.error('Firebase initialization error:', error);
+                }
+            }
+            
+            // Initialize Chatbot
+            if (typeof KrishiConnectChatbot !== 'undefined') {
+                const chatbot = new KrishiConnectChatbot();
+                chatbot.init();
+            }
+        });
+    </script>
     
     {% block extra_js %}{% endblock %}
 </body>

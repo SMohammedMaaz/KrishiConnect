@@ -4,128 +4,241 @@
 
 {% block extra_css %}
 <style>
-    .register-container {
-        max-width: 650px;
-        margin: 0 auto;
+    .container {
+        min-height: 85vh;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
     }
-    .required-field::after {
-        content: "*";
-        color: red;
-        margin-left: 3px;
+    .register-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        border-radius: 12px;
+        background-color: white;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+    .auth-logo {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        font-weight: 700;
+        font-size: 1.3rem;
+    }
+    .form-image img {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        max-height: 300px;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
+    .register-steps .step {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .register-steps .step-number {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-weight: 600;
+    }
+    .register-steps .step-text {
+        flex-grow: 1;
+    }
+    .profile-image-upload {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 20px;
+    }
+    .profile-image-preview {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 2px solid #e9ecef;
+    }
+    .profile-image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .profile-image-label {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    .profile-image-input {
+        display: none;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="register-container">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">Farmer Registration</h3>
+<div class="container">
+    <div class="register-container" data-aos="fade-up">
+        <div class="auth-logo">
+            <i data-feather="leaf" class="text-success me-2"></i>
+            <span>KrishiConnect</span>
+        </div>
+        
+        <div class="text-center">
+            <h2>Farmer Registration</h2>
+            <p class="text-muted">Create your farmer account and start selling your produce directly to buyers</p>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="form-image text-center">
+                    <img src="https://images.unsplash.com/photo-1631949454967-6c6d07fb59cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80" class="img-fluid" alt="Farmer Registration">
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-info">
-                        <i data-feather="info"></i> 
-                        Complete your profile to start selling your produce on KrishiConnect.
+                
+                <div class="register-steps">
+                    <h5>Registration Steps:</h5>
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">
+                            <strong>Complete Profile</strong>
+                            <p class="text-muted mb-0 small">Enter your details and location</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">
+                            <strong>Verify Aadhar</strong>
+                            <p class="text-muted mb-0 small">Secure verification process</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            <strong>Add Your Products</strong>
+                            <p class="text-muted mb-0 small">List crops you want to sell</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-text">
+                            <strong>Connect with Buyers</strong>
+                            <p class="text-muted mb-0 small">Start receiving inquiries</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <form id="register-form">
+                    <div class="profile-image-upload">
+                        <div class="profile-image-preview" id="profilePreview">
+                            <i data-feather="user" style="width: 50px; height: 50px; color: #adb5bd;"></i>
+                        </div>
+                        <label for="profileImage" class="profile-image-label">
+                            <i data-feather="camera" class="feather-small"></i>
+                        </label>
+                        <input type="file" id="profileImage" class="profile-image-input" accept="image/*">
                     </div>
                     
-                    <form id="registration-form">
-                        <h5 class="mb-3">Personal Details</h5>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="fullName" class="form-label required-field">Full Name</label>
-                                <input type="text" class="form-control" id="fullName" name="full_name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="phoneNumber" class="form-label required-field">Phone Number</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">+91</span>
-                                    <input type="tel" class="form-control" id="phoneNumber" name="phone_number" maxlength="10" pattern="[0-9]{10}" required>
-                                </div>
-                            </div>
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text">+91</span>
+                            <input type="tel" class="form-control" id="phone" value="{{ phone_number }}" readonly>
                         </div>
-                        
-                        <h5 class="mb-3 mt-4">Aadhar Verification</h5>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="aadharNumber" class="form-label required-field">Aadhar Number</label>
-                                <input type="text" class="form-control" id="aadharNumber" name="aadhar_number" maxlength="12" pattern="[0-9]{12}" required>
-                                <small class="form-text text-muted">Your 12-digit Aadhar number for verification</small>
-                            </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="aadharNumber" class="form-label">Aadhar Number</label>
+                        <input type="text" class="form-control" id="aadharNumber" placeholder="12-digit Aadhar Number" maxlength="12" pattern="[0-9]{12}" required>
+                        <div class="form-text">Your Aadhar details will be verified for security</div>
+                    </div>
+                    
+                    <h5 class="mt-4 mb-3">Address Details</h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="village" class="form-label">Village/Town</label>
+                            <input type="text" class="form-control" id="village" placeholder="Enter village or town" required>
                         </div>
-                        
-                        <h5 class="mb-3 mt-4">Farm Location</h5>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label for="village" class="form-label required-field">Village</label>
-                                <input type="text" class="form-control" id="village" name="village" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="district" class="form-label required-field">District</label>
-                                <input type="text" class="form-control" id="district" name="district" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="state" class="form-label required-field">State</label>
-                                <select class="form-select" id="state" name="state" required>
-                                    <option value="">Select State</option>
-                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                    <option value="Assam">Assam</option>
-                                    <option value="Bihar">Bihar</option>
-                                    <option value="Chhattisgarh">Chhattisgarh</option>
-                                    <option value="Goa">Goa</option>
-                                    <option value="Gujarat">Gujarat</option>
-                                    <option value="Haryana">Haryana</option>
-                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
-                                    <option value="Jharkhand">Jharkhand</option>
-                                    <option value="Karnataka">Karnataka</option>
-                                    <option value="Kerala">Kerala</option>
-                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                    <option value="Maharashtra">Maharashtra</option>
-                                    <option value="Manipur">Manipur</option>
-                                    <option value="Meghalaya">Meghalaya</option>
-                                    <option value="Mizoram">Mizoram</option>
-                                    <option value="Nagaland">Nagaland</option>
-                                    <option value="Odisha">Odisha</option>
-                                    <option value="Punjab">Punjab</option>
-                                    <option value="Rajasthan">Rajasthan</option>
-                                    <option value="Sikkim">Sikkim</option>
-                                    <option value="Tamil Nadu">Tamil Nadu</option>
-                                    <option value="Telangana">Telangana</option>
-                                    <option value="Tripura">Tripura</option>
-                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                    <option value="Uttarakhand">Uttarakhand</option>
-                                    <option value="West Bengal">West Bengal</option>
-                                </select>
-                            </div>
+                        <div class="col-md-6">
+                            <label for="district" class="form-label">District</label>
+                            <input type="text" class="form-control" id="district" placeholder="Enter district" required>
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="locationConsent" required>
-                                    <label class="form-check-label" for="locationConsent">
-                                        I consent to share my location to help buyers find my products
-                                    </label>
-                                </div>
-                            </div>
+                        <div class="col-md-12">
+                            <label for="state" class="form-label">State</label>
+                            <select class="form-select" id="state" required>
+                                <option value="">Select State</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                            </select>
                         </div>
-                        
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-success" id="register-btn">
-                                <span class="spinner-border spinner-border-sm d-none" id="register-spinner"></span>
-                                Register
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <p class="mb-0">Already registered? <a href="/api/farmers/login/">Login here</a></p>
-                </div>
+                    </div>
+                    
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="locationConsent" checked>
+                        <label class="form-check-label" for="locationConsent">
+                            Allow access to my current location for better crop suggestions
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success" id="registerBtn">
+                            <span id="registerSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            Complete Registration
+                        </button>
+                        <a href="/api/farmers/login/" class="btn btn-outline-secondary">Already have an account? Login</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -133,48 +246,52 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Firebase App (the core Firebase SDK) -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<!-- Firebase Auth -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
 
 <script>
-    // Initialize Firebase
-    const firebaseConfig = {
-        apiKey: "{{ firebase_config.apiKey }}",
-        authDomain: "{{ firebase_config.authDomain }}",
-        projectId: "{{ firebase_config.projectId }}",
-        storageBucket: "{{ firebase_config.storageBucket }}",
-        messagingSenderId: "{{ firebase_config.messagingSenderId }}",
-        appId: "{{ firebase_config.appId }}"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    
     document.addEventListener('DOMContentLoaded', function() {
-        const registrationForm = document.getElementById('registration-form');
-        const registerBtn = document.getElementById('register-btn');
-        const registerSpinner = document.getElementById('register-spinner');
+        // Initialize Firebase
+        firebase.initializeApp(window.firebaseConfig);
         
-        // Check if user is already authenticated
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (!user) {
-                // If not logged in, redirect to login page
-                window.location.href = '/api/farmers/login/';
+        // Profile image preview
+        const profileImage = document.getElementById('profileImage');
+        const profilePreview = document.getElementById('profilePreview');
+        
+        profileImage.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePreview.innerHTML = `<img src="${e.target.result}" alt="Profile Preview">`;
+                }
+                reader.readAsDataURL(file);
             }
         });
         
-        // Handle form submission
-        registrationForm.addEventListener('submit', function(e) {
+        // Aadhar number input formatting
+        const aadharInput = document.getElementById('aadharNumber');
+        aadharInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+        
+        // Registration form submission
+        const registerForm = document.getElementById('register-form');
+        const registerBtn = document.getElementById('registerBtn');
+        const registerSpinner = document.getElementById('registerSpinner');
+        
+        registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            registerSpinner.classList.remove('d-none');
+            // Show loading state
             registerBtn.disabled = true;
+            registerSpinner.classList.remove('d-none');
             
-            // Get form data
+            // Prepare form data
             const formData = {
                 full_name: document.getElementById('fullName').value,
-                phone_number: document.getElementById('phoneNumber').value,
+                phone_number: document.getElementById('phone').value,
                 aadhar_number: document.getElementById('aadharNumber').value,
                 village: document.getElementById('village').value,
                 district: document.getElementById('district').value,
@@ -236,8 +353,23 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        // Registration successful, redirect to dashboard
-                        window.location.href = '/api/farmers/dashboard/';
+                        // Upload profile image if selected
+                        const fileInput = document.getElementById('profileImage');
+                        if (fileInput.files.length > 0) {
+                            uploadProfileImage(user.uid, fileInput.files[0])
+                                .then(() => {
+                                    // Registration successful, redirect to dashboard
+                                    window.location.href = '/api/farmers/dashboard/';
+                                })
+                                .catch(error => {
+                                    console.error('Profile image upload error:', error);
+                                    // Still redirect to dashboard even if image upload fails
+                                    window.location.href = '/api/farmers/dashboard/';
+                                });
+                        } else {
+                            // No profile image, redirect to dashboard
+                            window.location.href = '/api/farmers/dashboard/';
+                        }
                     } else {
                         throw new Error(data.message || 'Registration failed');
                     }
@@ -249,6 +381,26 @@
                     registerSpinner.classList.add('d-none');
                     registerBtn.disabled = false;
                 });
+        }
+        
+        // Upload profile image function
+        function uploadProfileImage(userId, file) {
+            const formData = new FormData();
+            formData.append('profile_image', file);
+            
+            return fetch(`/api/farmers/profile/upload-image/${userId}/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + firebase.auth().currentUser.token
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Image upload failed');
+                }
+                return response.json();
+            });
         }
     });
 </script>

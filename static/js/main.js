@@ -1,398 +1,337 @@
 /**
  * KrishiConnect - Main JavaScript
- * Contains shared functionality across the platform
+ * 
+ * This file contains the core JavaScript functionality for the KrishiConnect platform.
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the back to top button
-    initBackToTop();
-    
-    // Initialize navbar scroll effect
-    initNavbarScroll();
-    
-    // Initialize form enhancements
-    enhanceForms();
-    
-    // Initialize animation on scroll
-    initScrollAnimations();
-    
-    // Initialize counter animations
-    initCounters();
-    
-    // Initialize weather and market updates
-    initRealTimeUpdates();
+    // Initialize all Feather icons
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+
+    // Initialize AOS (Animate On Scroll)
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+    }
+
+    // Initialize tooltips
+    initializeTooltips();
+
+    // Initialize animated counters
+    initializeCounters();
+
+    // Initialize weather widget if it exists
+    if (document.getElementById('get-weather-btn')) {
+        initializeWeatherWidget();
+    }
+
+    // Initialize market price data if the element exists
+    if (document.getElementById('market-prices-container')) {
+        initializeMarketPrices();
+    }
 });
 
 /**
- * Initialize back to top button functionality
+ * Initialize Bootstrap tooltips
  */
-function initBackToTop() {
-    const backToTopButton = document.getElementById('back-to-top');
-    if (backToTopButton) {
-        // Show/hide back to top button based on scroll position
-        window.addEventListener('scroll', function() {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('show');
-            } else {
-                backToTopButton.classList.remove('show');
-            }
-        });
-        
-        // Smooth scroll to top when button is clicked
-        backToTopButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        });
-    }
-}
-
-/**
- * Initialize navbar scroll effect
- */
-function initNavbarScroll() {
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
-                navbar.classList.add('navbar-scrolled');
-            } else {
-                navbar.classList.remove('navbar-scrolled');
-            }
-        });
-    }
-}
-
-/**
- * Enhance form interactions
- */
-function enhanceForms() {
-    // Add validation styles to forms with 'needs-validation' class
-    const forms = document.querySelectorAll('.needs-validation');
-    if (forms.length > 0) {
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            }, false);
-        });
-    }
+function initializeTooltips() {
+    // Select all elements with data-bs-toggle="tooltip" attribute
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     
-    // Add floating label behavior
-    const formControls = document.querySelectorAll('.form-control');
-    if (formControls.length > 0) {
-        Array.from(formControls).forEach(input => {
-            // Check if input has value on load
-            if (input.value.length > 0) {
-                input.classList.add('has-value');
-            }
+    if (tooltipTriggerList.length > 0 && typeof bootstrap !== 'undefined') {
+        // Create tooltips
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    }
+}
+
+/**
+ * Initialize animated counter elements
+ */
+function initializeCounters() {
+    const counters = document.querySelectorAll('.counter');
+    const speed = 200; // The lower the slower (milliseconds)
+    
+    counters.forEach(counter => {
+        const animate = () => {
+            const value = +counter.getAttribute('data-target');
+            const data = +counter.innerText;
             
-            // Check for input changes
-            input.addEventListener('input', () => {
-                if (input.value.length > 0) {
-                    input.classList.add('has-value');
-                } else {
-                    input.classList.remove('has-value');
+            const time = value / speed;
+            if (data < value) {
+                counter.innerText = Math.ceil(data + time);
+                setTimeout(animate, 1);
+            } else {
+                counter.innerText = value;
+            }
+        }
+        
+        // Use Intersection Observer to start animation when element is visible
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animate();
+                    observer.unobserve(entry.target);
                 }
             });
-        });
-    }
+        }, { threshold: 0.5 });
+        
+        observer.observe(counter);
+    });
 }
 
 /**
- * Initialize animations on scroll
+ * Initialize weather widget functionality
  */
-function initScrollAnimations() {
-    // Check if AOS is available
-    if (typeof AOS !== 'undefined') {
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true
+function initializeWeatherWidget() {
+    const weatherCity = document.getElementById('weather-city');
+    const weatherDate = document.getElementById('weather-date');
+    const weatherTemp = document.getElementById('weather-temp');
+    const weatherFeelsLike = document.getElementById('weather-feels-like');
+    const weatherHumidity = document.getElementById('weather-humidity');
+    const weatherWind = document.getElementById('weather-wind');
+    const weatherIcon = document.getElementById('weather-icon');
+    const weatherAdvisory = document.getElementById('weather-advisory');
+    const getWeatherBtn = document.getElementById('get-weather-btn');
+    
+    // Set current date
+    const today = new Date();
+    const options = { month: 'long', day: 'numeric' };
+    weatherDate.textContent = today.toLocaleDateString('en-US', options);
+    
+    // Sample weather data (would be replaced with actual API data)
+    const demoWeatherData = [
+        {
+            city: 'Delhi',
+            temp: 32,
+            feels_like: 34,
+            humidity: 45,
+            wind: 12,
+            icon: '01d',
+            advisory: 'Good conditions for wheat harvest. Complete harvesting within 2-3 days to avoid potential rain.'
+        },
+        {
+            city: 'Mumbai',
+            temp: 29,
+            feels_like: 32,
+            humidity: 78,
+            wind: 14,
+            icon: '02d',
+            advisory: 'High humidity levels may affect crop storage. Ensure proper ventilation for stored grains.'
+        },
+        {
+            city: 'Bangalore',
+            temp: 26,
+            feels_like: 27,
+            humidity: 60,
+            wind: 8,
+            icon: '03d',
+            advisory: 'Moderate temperatures are ideal for vegetable cultivation. Consider planting tomatoes and peppers.'
+        },
+        {
+            city: 'Chennai',
+            temp: 33,
+            feels_like: 36,
+            humidity: 70,
+            wind: 10,
+            icon: '01d',
+            advisory: 'Hot conditions expected. Increase irrigation frequency for paddy fields to prevent drying.'
+        },
+        {
+            city: 'Kolkata',
+            temp: 31,
+            feels_like: 33,
+            humidity: 65,
+            wind: 9,
+            icon: '04d',
+            advisory: 'Partly cloudy conditions with possible light showers. Good for rice transplantation.'
+        }
+    ];
+    
+    // Function to update weather
+    function updateWeather(data) {
+        weatherCity.textContent = data.city;
+        weatherTemp.textContent = data.temp;
+        weatherFeelsLike.textContent = data.feels_like;
+        weatherHumidity.textContent = data.humidity;
+        weatherWind.textContent = data.wind;
+        weatherIcon.src = `https://openweathermap.org/img/wn/${data.icon}@2x.png`;
+        weatherAdvisory.innerHTML = `<i data-feather="info" class="feather-small me-2"></i> ${data.advisory}`;
+        feather.replace();
+    }
+    
+    // Get weather button click
+    if (getWeatherBtn) {
+        getWeatherBtn.addEventListener('click', function() {
+            // In a real app, this would use geolocation and a weather API
+            const randomIndex = Math.floor(Math.random() * demoWeatherData.length);
+            updateWeather(demoWeatherData[randomIndex]);
         });
     }
 }
 
 /**
- * Format currency as Indian Rupees
- * @param {number} amount - Amount to format
- * @returns {string} Formatted currency string
+ * Initialize market prices data and visualization
+ */
+function initializeMarketPrices() {
+    const container = document.getElementById('market-prices-container');
+    
+    if (!container) return;
+    
+    // Sample market price data (would be replaced with actual API data)
+    const marketPriceData = [
+        { crop: 'Rice', price: 2240, change: 2.5, trend: 'up' },
+        { crop: 'Wheat', price: 2100, change: -1.2, trend: 'down' },
+        { crop: 'Maize', price: 1850, change: 0.8, trend: 'up' },
+        { crop: 'Soybeans', price: 3600, change: 3.2, trend: 'up' },
+        { crop: 'Cotton', price: 6500, change: -0.5, trend: 'down' },
+        { crop: 'Sugarcane', price: 350, change: 1.5, trend: 'up' },
+        { crop: 'Potatoes', price: 1200, change: 4.2, trend: 'up' },
+        { crop: 'Onions', price: 1800, change: -2.3, trend: 'down' }
+    ];
+    
+    // Create and populate market price items
+    marketPriceData.forEach(item => {
+        const priceItem = document.createElement('div');
+        priceItem.className = 'price-item';
+        
+        const trendIcon = item.trend === 'up' 
+            ? '<i data-feather="trending-up" class="text-success feather-small"></i>'
+            : '<i data-feather="trending-down" class="text-danger feather-small"></i>';
+            
+        const changeClass = item.trend === 'up' ? 'price-change-up' : 'price-change-down';
+        const changePrefix = item.trend === 'up' ? '+' : '';
+        
+        priceItem.innerHTML = `
+            <div class="crop-name">${item.crop}</div>
+            <div class="price-info">
+                <span class="crop-price">₹${item.price}/q</span>
+                <span class="${changeClass}">${trendIcon} ${changePrefix}${item.change}%</span>
+            </div>
+        `;
+        
+        container.appendChild(priceItem);
+    });
+    
+    // Re-initialize Feather icons
+    feather.replace();
+}
+
+/**
+ * Function for checking if an element is in viewport
+ * @param {HTMLElement} el - The element to check
+ * @returns {boolean} - True if element is in viewport
+ */
+function isInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
+
+/**
+ * Format currency in Indian Rupee format
+ * @param {number} amount - The amount to format
+ * @returns {string} - Formatted amount
  */
 function formatCurrency(amount) {
     return new Intl.NumberFormat('en-IN', {
         style: 'currency',
         currency: 'INR',
-        maximumFractionDigits: 2
+        maximumFractionDigits: 0
     }).format(amount);
 }
 
 /**
+ * Handle form validation with custom styling
+ * @param {HTMLFormElement} form - The form to validate
+ * @returns {boolean} - True if form is valid
+ */
+function validateForm(form) {
+    const inputs = form.querySelectorAll('input, select, textarea');
+    let isValid = true;
+    
+    inputs.forEach(input => {
+        if (input.hasAttribute('required') && !input.value.trim()) {
+            input.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            input.classList.remove('is-invalid');
+        }
+        
+        // Add event listener to remove invalid class on input
+        input.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+    
+    return isValid;
+}
+
+/**
  * Format date in Indian format
- * @param {Date|string} date - Date object or date string
- * @returns {string} Formatted date string
+ * @param {Date} date - The date to format
+ * @returns {string} - Formatted date
  */
 function formatDate(date) {
-    if (typeof date === 'string') {
-        date = new Date(date);
-    }
-    return new Intl.DateTimeFormat('en-IN', {
-        day: 'numeric',
-        month: 'short', 
-        year: 'numeric'
-    }).format(date);
+    const options = { day: 'numeric', month: 'short', year: 'numeric' };
+    return date.toLocaleDateString('en-IN', options);
 }
 
 /**
- * Create a toast notification
- * @param {string} message - Message to show
- * @param {string} type - Type of toast (success, error, warning, info)
+ * Calculate distance between two coordinates (in km)
+ * @param {number} lat1 - Latitude of first point
+ * @param {number} lon1 - Longitude of first point
+ * @param {number} lat2 - Latitude of second point
+ * @param {number} lon2 - Longitude of second point
+ * @returns {number} - Distance in kilometers
  */
-function showToast(message, type = 'info') {
-    // Check if Bootstrap toast functionality is available
-    if (typeof bootstrap !== 'undefined') {
-        const toastContainer = document.getElementById('toast-container');
-        
-        // Create container if it doesn't exist
-        if (!toastContainer) {
-            const newContainer = document.createElement('div');
-            newContainer.id = 'toast-container';
-            newContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-            document.body.appendChild(newContainer);
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2); 
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    const distance = R * c; // Distance in km
+    return Math.round(distance * 10) / 10;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180);
+}
+
+/**
+ * Get current location using browser's geolocation API
+ * @returns {Promise} - Promise that resolves with coordinates
+ */
+function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    resolve({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    });
+                },
+                error => {
+                    reject(new Error(`Geolocation error: ${error.message}`));
+                }
+            );
+        } else {
+            reject(new Error('Geolocation is not supported by this browser'));
         }
-        
-        // Create toast element
-        const toastEl = document.createElement('div');
-        toastEl.className = `toast align-items-center border-0 text-white bg-${type}`;
-        toastEl.setAttribute('role', 'alert');
-        toastEl.setAttribute('aria-live', 'assertive');
-        toastEl.setAttribute('aria-atomic', 'true');
-        
-        // Create toast content
-        toastEl.innerHTML = `
-            <div class="d-flex">
-                <div class="toast-body">
-                    ${message}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        `;
-        
-        // Add to container
-        document.getElementById('toast-container').appendChild(toastEl);
-        
-        // Initialize and show toast
-        const toast = new bootstrap.Toast(toastEl, {
-            autohide: true,
-            delay: 5000
-        });
-        toast.show();
-        
-        // Remove from DOM after hiding
-        toastEl.addEventListener('hidden.bs.toast', function() {
-            toastEl.remove();
-        });
-    } else {
-        // Fallback if Bootstrap is not available
-        alert(message);
-    }
-}
-
-/**
- * Add CSS styles for back to top button if not already defined
- */
-(function() {
-    // Only add if the element exists and styles are not in main.css
-    if (document.getElementById('back-to-top')) {
-        const style = document.createElement('style');
-        style.textContent = `
-            .back-to-top {
-                position: fixed;
-                bottom: -60px;
-                right: 30px;
-                width: 45px;
-                height: 45px;
-                background: var(--primary-color, #2E7D32);
-                color: white;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-                z-index: 99;
-                opacity: 0;
-                transition: all 0.5s ease;
-            }
-            
-            .back-to-top.show {
-                bottom: 30px;
-                opacity: 1;
-            }
-            
-            .back-to-top:hover {
-                background: var(--primary-dark, #1B5E20);
-                transform: translateY(-5px);
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            }
-            
-            @media (max-width: 768px) {
-                .back-to-top {
-                    right: 20px;
-                    width: 40px;
-                    height: 40px;
-                }
-                
-                .back-to-top.show {
-                    bottom: 20px;
-                }
-            }
-        `;
-        document.head.append(style);
-    }
-})();
-
-/**
- * Initialize the counter animations on stats section
- */
-function initCounters() {
-    const counters = document.querySelectorAll('.counter-value');
-    if (counters.length > 0) {
-        // Define the final counter values
-        const counterValues = {
-            'farmerCount': 15842,
-            'buyerCount': 3267,
-            'productCount': 24936
-        };
-        
-        // Create an intersection observer to trigger counter animation when in viewport
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const counter = entry.target;
-                    const id = counter.id;
-                    const targetValue = counterValues[id] || parseInt(counter.innerText) || 0;
-                    
-                    // Only animate if not already animated
-                    if (counter.innerText === '0') {
-                        animateCounter(counter, 0, targetValue, 2000);
-                    }
-                    
-                    // Unobserve after animation starts
-                    observer.unobserve(counter);
-                }
-            });
-        }, { threshold: 0.5 });
-        
-        // Observe each counter element
-        counters.forEach(counter => {
-            // Skip elements with non-numeric final values
-            if (counter.innerText.indexOf('+') === -1) {
-                observer.observe(counter);
-            }
-        });
-    }
-}
-
-/**
- * Animate a counter from start to end value
- * @param {HTMLElement} element - The counter element
- * @param {number} start - Start value
- * @param {number} end - End value
- * @param {number} duration - Animation duration in milliseconds
- */
-function animateCounter(element, start, end, duration) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const currentValue = Math.floor(progress * (end - start) + start);
-        element.innerText = currentValue.toLocaleString('en-IN');
-        
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        }
-    };
-    window.requestAnimationFrame(step);
-}
-
-/**
- * Initialize real-time weather and market updates
- */
-function initRealTimeUpdates() {
-    // Weather dropdown handler
-    const weatherDropdown = document.querySelector('.weather-forecast .dropdown-menu');
-    if (weatherDropdown) {
-        weatherDropdown.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                const selectedLocation = this.textContent;
-                this.closest('.dropdown').querySelector('.dropdown-toggle').textContent = selectedLocation;
-                
-                // In a real implementation, this would fetch weather data for the selected location
-                // For demo, just show a loading state and then update with simulated data
-                simulateWeatherUpdate(selectedLocation);
-            });
-        });
-    }
-    
-    // Market timeframe dropdown handler
-    const marketDropdown = document.querySelector('.market-trends .dropdown-menu');
-    if (marketDropdown) {
-        marketDropdown.querySelectorAll('.dropdown-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                const selectedTimeframe = this.textContent;
-                this.closest('.dropdown').querySelector('.dropdown-toggle').textContent = selectedTimeframe;
-                
-                // In a real implementation, this would fetch market data for the selected timeframe
-                // For demo, show loading state
-                const chartContainer = document.querySelector('.market-trends .chart-container');
-                if (chartContainer) {
-                    chartContainer.classList.add('loading');
-                    setTimeout(() => {
-                        chartContainer.classList.remove('loading');
-                        // Chart would be updated with new data in a real implementation
-                    }, 1500);
-                }
-            });
-        });
-    }
-}
-
-/**
- * Simulate weather data update for demo purposes
- * @param {string} location - Selected location name
- */
-function simulateWeatherUpdate(location) {
-    const weatherContainer = document.querySelector('.current-weather');
-    const forecastContainer = document.querySelector('.forecast');
-    
-    if (weatherContainer && forecastContainer) {
-        // Add loading state
-        weatherContainer.classList.add('loading');
-        forecastContainer.classList.add('loading');
-        
-        // Simulate API delay
-        setTimeout(() => {
-            // Remove loading state
-            weatherContainer.classList.remove('loading');
-            forecastContainer.classList.remove('loading');
-            
-            // Update weather advisory based on location (for demo)
-            const advisoryElement = document.querySelector('.farming-advice p');
-            if (advisoryElement) {
-                if (location.includes('Delhi')) {
-                    advisoryElement.textContent = 'Hot and dry conditions expected. Consider evening irrigation for crops. Protect seedlings from heat stress.';
-                } else if (location.includes('Mumbai')) {
-                    advisoryElement.textContent = 'Monsoon patterns predicted with high humidity. Watch for fungal diseases in crops. Good time for rice cultivation.';
-                } else if (location.includes('Chennai')) {
-                    advisoryElement.textContent = 'Moderate temperatures with occasional showers. Ideal conditions for vegetable farming. Monitor soil moisture levels.';
-                }
-                // Default Bangalore advisory is already set in the HTML
-            }
-            
-            // In a real app, we would update the weather icon, temperature, and forecast
-        }, 1000);
-    }
+    });
 }
