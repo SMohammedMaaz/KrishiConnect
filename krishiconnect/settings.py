@@ -65,12 +65,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'krishiconnect.wsgi.application'
 
 # Database
-# Using Django's default DB for user management, with Firebase for the actual data
+# Using PostgreSQL for persistent data storage along with Firebase
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 # Firebase Configuration
