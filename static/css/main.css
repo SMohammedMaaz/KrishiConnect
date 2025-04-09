@@ -1,0 +1,292 @@
+/* KrishiConnect Main Stylesheet */
+
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+/* Navbar Customization */
+.navbar-dark.bg-success {
+    background-color: #28a745 !important;
+}
+
+/* Custom Feather Icons */
+.feather {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+}
+
+.feather-small {
+    width: 16px;
+    height: 16px;
+}
+
+.feather-large {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 10px;
+}
+
+/* Card Customization */
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+/* Button Customization */
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover, .btn-success:focus {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-outline-success {
+    color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-outline-success:hover, .btn-outline-success:focus {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+/* Form Controls */
+.form-control:focus, .form-select:focus {
+    border-color: #80c483;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+}
+
+/* Custom Badge Styles */
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+/* Footer Styles */
+footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+footer a {
+    color: #28a745;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #218838;
+    text-decoration: underline;
+}
+
+/* Product Card Styles */
+.product-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Dashboard Stats Card */
+.stats-card {
+    border-left: 4px solid #28a745;
+    border-radius: 0.5rem;
+    transition: transform 0.3s;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Utility Classes */
+.bg-light-success {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+/* Loading Spinners */
+.spinner-border.text-success {
+    color: #28a745 !important;
+}
+
+/* Modal Customization */
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Alert Customization */
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+/* Status Indicator */
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.status-indicator.active {
+    background-color: #28a745;
+}
+
+.status-indicator.inactive {
+    background-color: #dc3545;
+}
+
+.status-indicator.pending {
+    background-color: #ffc107;
+}
+
+/* Farmer/Buyer Profile Section */
+.profile-section {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .feather-large {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .stats-card .card-title {
+        font-size: 0.9rem;
+    }
+    
+    .stats-card h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Pagination Styles */
+.pagination .page-item.active .page-link {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.pagination .page-link {
+    color: #28a745;
+}
+
+.pagination .page-link:hover {
+    color: #218838;
+}
+
+/* Table Customization */
+.table th {
+    border-top: none;
+    border-bottom: 2px solid #e9ecef;
+    font-weight: 600;
+}
+
+/* Authentication Form Styles */
+.login-container, .register-container {
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.phone-input {
+    display: flex;
+}
+
+.country-code {
+    width: 80px;
+}
+
+/* Product Listing Styles */
+.product-price {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.product-location {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Farmer Image Section */
+.farmer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+/* Product Image */
+.product-image {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Category Badge */
+.category-badge {
+    background-color: #e9f7ef;
+    color: #28a745;
+    font-weight: 500;
+}

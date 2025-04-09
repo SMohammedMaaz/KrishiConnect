@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block title %}Farmer Login - KrishiConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        max-width: 450px;
+        margin: 0 auto;
+    }
+    .phone-input {
+        display: flex;
+    }
+    .country-code {
+        width: 80px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="login-container">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Farmer Login</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i data-feather="user" class="feather-large text-success"></i>
+                        <p class="mt-2">Login with your mobile number using OTP verification</p>
+                    </div>
+                    
+                    <div id="login-form">
+                        <div class="alert alert-info">
+                            <i data-feather="info"></i> 
+                            We use phone verification for secure and easy access.
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <div class="phone-input">
+                                <div class="input-group">
+                                    <span class="input-group-text country-code">+91</span>
+                                    <input type="tel" class="form-control" id="phone" placeholder="Enter 10-digit number" maxlength="10" pattern="[0-9]{10}" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-success" id="send-otp-btn">
+                                <span class="spinner-border spinner-border-sm d-none" id="otp-spinner"></span>
+                                Send OTP
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="otp-form" class="d-none">
+                        <div class="alert alert-success">
+                            <i data-feather="check-circle"></i>
+                            OTP sent to your phone. Please enter it below.
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="otp" class="form-label">Enter OTP</label>
+                            <input type="text" class="form-control" id="otp" placeholder="6-digit OTP" maxlength="6" pattern="[0-9]{6}" required>
+                        </div>
+                        
+                        <div class="mb-3 text-center">
+                            <span id="timer">Resend OTP in <span id="countdown">60</span>s</span>
+                            <a href="#" id="resend-otp" class="d-none">Resend OTP</a>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-success" id="verify-otp-btn">
+                                <span class="spinner-border spinner-border-sm d-none" id="verify-spinner"></span>
+                                Verify OTP
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <p class="mb-0">New farmer? <a href="/api/farmers/register-view/">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+<script>
+    // Initialize Firebase
+    const firebaseConfig = {
+        apiKey: "{{ firebase_config.apiKey }}",
+        authDomain: "{{ firebase_config.authDomain }}",
+        projectId: "{{ firebase_config.projectId }}",
+        storageBucket: "{{ firebase_config.storageBucket }}",
+        messagingSenderId: "{{ firebase_config.messagingSenderId }}",
+        appId: "{{ firebase_config.appId }}"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('login-form');
+        const otpForm = document.getElementById('otp-form');
+        const phoneInput = document.getElementById('phone');
+        const otpInput = document.getElementById('otp');
+        const sendOtpBtn = document.getElementById('send-otp-btn');
+        const verifyOtpBtn = document.getElementById('verify-otp-btn');
+        const resendOtpLink = document.getElementById('resend-otp');
+        const timerSpan = document.getElementById('timer');
+        const countdownSpan = document.getElementById('countdown');
+        const otpSpinner = document.getElementById('otp-spinner');
+        const verifySpinner = document.getElementById('verify-spinner');
+        
+        let verificationId = null;
+        let countdownInterval = null;
+        
+        // Set up recaptcha verifier
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('send-otp-btn', {
+            'size': 'invisible',
+            'callback': (response) => {
+                // reCAPTCHA solved, send OTP
+                sendOTP();
+            }
+        });
+        
+        // Send OTP button click
+        sendOtpBtn.addEventListener('click', sendOTP);
+        
+        // Verify OTP button click
+        verifyOtpBtn.addEventListener('click', verifyOTP);
+        
+        // Resend OTP link click
+        resendOtpLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            sendOTP();
+        });
+        
+        // Send OTP function
+        function sendOTP() {
+            const phoneNumber = '+91' + phoneInput.value.trim();
+            
+            if (!phoneNumber.match(/^\+91[0-9]{10}$/)) {
+                alert('Please enter a valid 10-digit phone number');
+                return;
+            }
+            
+            otpSpinner.classList.remove('d-none');
+            sendOtpBtn.disabled = true;
+            
+            firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+                .then((confirmationResult) => {
+                    // SMS sent. Save verification ID for later
+                    verificationId = confirmationResult.verificationId;
+                    
+                    // Show OTP form
+                    loginForm.classList.add('d-none');
+                    otpForm.classList.remove('d-none');
+                    
+                    // Start countdown
+                    startCountdown();
+                    
+                    otpSpinner.classList.add('d-none');
+                    sendOtpBtn.disabled = false;
+                })
+                .catch((error) => {
+                    console.error('Error sending OTP:', error);
+                    alert('Error sending OTP. Please try again.');
+                    
+                    otpSpinner.classList.add('d-none');
+                    sendOtpBtn.disabled = false;
+                    
+                    // Reset reCAPTCHA
+                    window.recaptchaVerifier.render().then(function(widgetId) {
+                        grecaptcha.reset(widgetId);
+                    });
+                });
+        }
+        
+        // Verify OTP function
+        function verifyOTP() {
+            const otp = otpInput.value.trim();
+            
+            if (!otp || otp.length !== 6) {
+                alert('Please enter a valid 6-digit OTP');
+                return;
+            }
+            
+            verifySpinner.classList.remove('d-none');
+            verifyOtpBtn.disabled = true;
+            
+            const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, otp);
+            
+            firebase.auth().signInWithCredential(credential)
+                .then((result) => {
+                    // User signed in successfully
+                    const user = result.user;
+                    
+                    // Get ID token
+                    return user.getIdToken();
+                })
+                .then((token) => {
+                    // Check if user is registered
+                    return fetch('/api/farmers/profile/', {
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+                })
+                .then((response) => {
+                    if (response.ok) {
+                        // User is registered, redirect to dashboard
+                        window.location.href = '/api/farmers/dashboard/';
+                    } else {
+                        // User is not registered, redirect to registration
+                        window.location.href = '/api/farmers/register-view/';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error verifying OTP:', error);
+                    alert('Invalid OTP. Please try again.');
+                    
+                    verifySpinner.classList.add('d-none');
+                    verifyOtpBtn.disabled = false;
+                });
+        }
+        
+        // Start countdown timer
+        function startCountdown() {
+            let seconds = 60;
+            countdownSpan.textContent = seconds;
+            
+            // Clear previous interval if exists
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            // Hide resend link, show timer
+            resendOtpLink.classList.add('d-none');
+            timerSpan.classList.remove('d-none');
+            
+            countdownInterval = setInterval(() => {
+                seconds--;
+                countdownSpan.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    
+                    // Show resend link, hide timer
+                    resendOtpLink.classList.remove('d-none');
+                    timerSpan.classList.add('d-none');
+                }
+            }, 1000);
+        }
+    });
+</script>
+{% endblock %}

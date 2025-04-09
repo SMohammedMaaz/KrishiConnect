@@ -1,0 +1,418 @@
+{% extends 'base.html' %}
+
+{% block title %}Add New Product - KrishiConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+    }
+    .preview-image {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    .required-field::after {
+        content: "*";
+        color: red;
+        margin-left: 3px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i data-feather="plus-circle"></i> Add New Product</h2>
+    <div>
+        <a href="/api/farmers/dashboard/" class="btn btn-outline-secondary">
+            <i data-feather="arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="card form-section">
+    <div class="card-body">
+        <div class="alert alert-info">
+            <i data-feather="info"></i> 
+            Complete the form below to list your product for buyers to see.
+        </div>
+        
+        <form id="add-product-form">
+            <h5 class="mb-3">Product Details</h5>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="productName" class="form-label required-field">Product Name</label>
+                    <input type="text" class="form-control" id="productName" name="name" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="productCategory" class="form-label required-field">Category</label>
+                    <select class="form-select" id="productCategory" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Grains">Grains</option>
+                        <option value="Pulses">Pulses</option>
+                        <option value="Fruits">Fruits</option>
+                        <option value="Vegetables">Vegetables</option>
+                        <option value="Spices">Spices</option>
+                        <option value="Oils">Oils</option>
+                        <option value="Dairy">Dairy</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="productDescription" class="form-label required-field">Description</label>
+                <textarea class="form-control" id="productDescription" name="description" rows="3" required></textarea>
+                <small class="form-text text-muted">Provide details about your product quality, features, etc.</small>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="productQuantity" class="form-label required-field">Quantity</label>
+                    <input type="number" class="form-control" id="productQuantity" name="quantity" min="0.1" step="0.1" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="productUnit" class="form-label required-field">Unit</label>
+                    <select class="form-select" id="productUnit" name="unit" required>
+                        <option value="">Select Unit</option>
+                        <option value="kg">Kilogram (kg)</option>
+                        <option value="quintal">Quintal</option>
+                        <option value="ton">Ton</option>
+                        <option value="litre">Litre</option>
+                        <option value="dozen">Dozen</option>
+                        <option value="piece">Piece</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="productPrice" class="form-label required-field">Price (₹) per unit</label>
+                    <input type="number" class="form-control" id="productPrice" name="price" min="1" step="0.01" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="productQuality" class="form-label">Quality Grade (optional)</label>
+                <select class="form-select" id="productQuality" name="quality_grade">
+                    <option value="">Select Grade (if applicable)</option>
+                    <option value="A">Grade A (Premium)</option>
+                    <option value="B">Grade B (Standard)</option>
+                    <option value="C">Grade C (Economy)</option>
+                    <option value="Organic">Organic Certified</option>
+                </select>
+            </div>
+            
+            <h5 class="mb-3 mt-4">Product Location</h5>
+            
+            <div class="mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="useProfileLocation" checked>
+                    <label class="form-check-label" for="useProfileLocation">
+                        Use my profile location
+                    </label>
+                </div>
+                <small class="form-text text-muted">Uncheck to specify a different location for this product.</small>
+            </div>
+            
+            <div id="locationFields" class="d-none">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="productVillage" class="form-label">Village</label>
+                        <input type="text" class="form-control" id="productVillage" name="village">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="productDistrict" class="form-label">District</label>
+                        <input type="text" class="form-control" id="productDistrict" name="district">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="productState" class="form-label">State</label>
+                        <select class="form-select" id="productState" name="state">
+                            <option value="">Select State</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <h5 class="mb-3 mt-4">Product Images</h5>
+            
+            <div class="mb-3">
+                <label for="productImages" class="form-label">Upload Images (up to 3)</label>
+                <input type="file" class="form-control" id="productImages" accept="image/*" multiple>
+                <small class="form-text text-muted">Clear photos help buyers make decisions faster.</small>
+            </div>
+            
+            <div id="imagePreviewContainer" class="mb-3 d-flex flex-wrap"></div>
+            
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-success" id="submit-btn">
+                    <span class="spinner-border spinner-border-sm d-none" id="submit-spinner"></span>
+                    Add Product
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<!-- Firebase Storage -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+
+<script src="/static/js/firebase-auth.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is authenticated
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) {
+                // If not logged in, redirect to login page
+                window.location.href = '/api/farmers/login/';
+                return;
+            }
+            
+            // Load farmer profile data for location
+            loadFarmerProfile(user);
+        });
+        
+        // Toggle location fields
+        document.getElementById('useProfileLocation').addEventListener('change', function() {
+            const locationFields = document.getElementById('locationFields');
+            locationFields.classList.toggle('d-none', this.checked);
+            
+            // Make fields required or not based on checkbox
+            const locationInputs = locationFields.querySelectorAll('input, select');
+            locationInputs.forEach(input => {
+                input.required = !this.checked;
+            });
+        });
+        
+        // Handle image upload preview
+        const imageInput = document.getElementById('productImages');
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        let selectedFiles = [];
+        
+        imageInput.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
+            selectedFiles = Array.from(this.files).slice(0, 3); // Limit to 3 images
+            
+            if (selectedFiles.length > 3) {
+                alert('You can only upload up to 3 images. Only the first 3 will be used.');
+            }
+            
+            selectedFiles.forEach(file => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'preview-image';
+                    previewContainer.appendChild(img);
+                }
+                
+                reader.readAsDataURL(file);
+            });
+        });
+        
+        // Load farmer profile for location details
+        function loadFarmerProfile(user) {
+            user.getIdToken().then(token => {
+                fetch('/api/farmers/profile/', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch profile');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Set default location values
+                    document.getElementById('productVillage').value = data.address?.village || '';
+                    document.getElementById('productDistrict').value = data.address?.district || '';
+                    document.getElementById('productState').value = data.address?.state || '';
+                })
+                .catch(error => {
+                    console.error('Error loading profile:', error);
+                });
+            });
+        }
+        
+        // Handle form submission
+        document.getElementById('add-product-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const submitSpinner = document.getElementById('submit-spinner');
+            
+            // Disable button and show spinner
+            submitBtn.disabled = true;
+            submitSpinner.classList.remove('d-none');
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('productName').value,
+                category: document.getElementById('productCategory').value,
+                description: document.getElementById('productDescription').value,
+                quantity: parseFloat(document.getElementById('productQuantity').value),
+                unit: document.getElementById('productUnit').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                quality_grade: document.getElementById('productQuality').value
+            };
+            
+            // Add location data if not using profile location
+            if (!document.getElementById('useProfileLocation').checked) {
+                formData.village = document.getElementById('productVillage').value;
+                formData.district = document.getElementById('productDistrict').value;
+                formData.state = document.getElementById('productState').value;
+            }
+            
+            // First handle image uploads if any
+            if (selectedFiles.length > 0) {
+                uploadImages(selectedFiles)
+                    .then(imageUrls => {
+                        // Add image URLs to form data
+                        formData.image_urls = imageUrls;
+                        
+                        // Then create the product
+                        createProduct(formData);
+                    })
+                    .catch(error => {
+                        console.error('Error uploading images:', error);
+                        alert('Error uploading images: ' + error.message);
+                        
+                        // Enable button and hide spinner
+                        submitBtn.disabled = false;
+                        submitSpinner.classList.add('d-none');
+                    });
+            } else {
+                // No images to upload, create product directly
+                createProduct(formData);
+            }
+        });
+        
+        // Upload images to Firebase Storage
+        function uploadImages(files) {
+            return new Promise((resolve, reject) => {
+                const user = firebase.auth().currentUser;
+                const imageUrls = [];
+                let uploadedCount = 0;
+                
+                files.forEach((file, index) => {
+                    // Create a storage reference
+                    const storageRef = firebase.storage().ref();
+                    const fileRef = storageRef.child(`products/${user.uid}/${Date.now()}_${index}`);
+                    
+                    // Upload file
+                    const uploadTask = fileRef.put(file);
+                    
+                    uploadTask.on('state_changed', 
+                        // Progress function
+                        null,
+                        // Error function
+                        (error) => {
+                            reject(error);
+                        },
+                        // Complete function
+                        () => {
+                            // Get download URL
+                            uploadTask.snapshot.ref.getDownloadURL()
+                                .then(downloadURL => {
+                                    imageUrls.push(downloadURL);
+                                    uploadedCount++;
+                                    
+                                    // If all uploads complete, resolve
+                                    if (uploadedCount === files.length) {
+                                        resolve(imageUrls);
+                                    }
+                                })
+                                .catch(error => {
+                                    reject(error);
+                                });
+                        }
+                    );
+                });
+                
+                // If no files, resolve with empty array
+                if (files.length === 0) {
+                    resolve([]);
+                }
+            });
+        }
+        
+        // Create product in Firestore
+        function createProduct(productData) {
+            firebase.auth().currentUser.getIdToken()
+                .then(token => {
+                    return fetch('/api/products/create/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify(productData)
+                    });
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to create product');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Product added successfully!');
+                        // Redirect to dashboard
+                        window.location.href = '/api/farmers/dashboard/';
+                    } else {
+                        throw new Error(data.message || 'Failed to create product');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating product:', error);
+                    alert('Error creating product: ' + error.message);
+                    
+                    // Enable button and hide spinner
+                    document.getElementById('submit-btn').disabled = false;
+                    document.getElementById('submit-spinner').classList.add('d-none');
+                });
+        }
+    });
+</script>
+{% endblock %}

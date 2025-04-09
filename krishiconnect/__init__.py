@@ -1,0 +1,1 @@
+# KrishiConnect Django Project

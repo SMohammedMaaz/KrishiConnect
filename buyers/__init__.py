@@ -1,0 +1,1 @@
+# Buyers app for KrishiConnect

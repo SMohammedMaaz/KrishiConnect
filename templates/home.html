@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}KrishiConnect - Smart Agri-Intelligence & Market Integration Platform{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">Welcome to KrishiConnect</h1>
+    <p class="lead">Empowering farmers with technology and connecting them directly to buyers.</p>
+    <hr class="my-4">
+    <p>Join our platform to revolutionize agricultural marketing and distribution.</p>
+    <div class="d-flex gap-3">
+        <a class="btn btn-success btn-lg" href="/api/farmers/register-view/" role="button">
+            <i data-feather="user-plus"></i> Join as Farmer
+        </a>
+        <a class="btn btn-outline-success btn-lg" href="/api/buyers/register-view/" role="button">
+            <i data-feather="shopping-bag"></i> Join as Buyer
+        </a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i data-feather="layers" class="feather-large text-success mb-3"></i>
+                <h3>Direct Market Access</h3>
+                <p>Sell your produce directly to buyers without middlemen and get better prices.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i data-feather="trending-up" class="feather-large text-success mb-3"></i>
+                <h3>Smart Crop Suggestions</h3>
+                <p>Get AI-powered recommendations for crops based on your soil, climate, and market demand.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i data-feather="map-pin" class="feather-large text-success mb-3"></i>
+                <h3>Location-based Matching</h3>
+                <p>Connect with nearby buyers to reduce transportation costs and improve freshness.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h3>For Farmers</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">List your produce with images, prices, and quantity</li>
+                    <li class="list-group-item">Get alerts for market price changes</li>
+                    <li class="list-group-item">Receive smart crop suggestions based on your location</li>
+                    <li class="list-group-item">Secure verification with Aadhar</li>
+                    <li class="list-group-item">Connect with bulk buyers and businesses</li>
+                </ul>
+                <div class="mt-3">
+                    <a href="/api/farmers/register-view/" class="btn btn-success">Register as Farmer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h3>For Buyers</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Browse fresh produce directly from farmers</li>
+                    <li class="list-group-item">Search by location, crop type, and price range</li>
+                    <li class="list-group-item">View farmer details and product quality</li>
+                    <li class="list-group-item">Get location-based recommendations</li>
+                    <li class="list-group-item">Direct communication with farmers</li>
+                </ul>
+                <div class="mt-3">
+                    <a href="/api/buyers/register-view/" class="btn btn-outline-success">Register as Buyer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="row mt-5">
+    <div class="col-12 text-center mb-4">
+        <h2>Our Platform Stats</h2>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="card-title text-success" id="farmerCount">...</h3>
+                <p class="card-text">Farmers Registered</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="card-title text-success" id="buyerCount">...</h3>
+                <p class="card-text">Buyers Onboarded</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="card-title text-success" id="productCount">...</h3>
+                <p class="card-text">Products Listed</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="card-title text-success" id="stateCount">25+</h3>
+                <p class="card-text">States & UTs Covered</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Fetch stats from API
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/api/dashboard/stats/')
+            .then(response => response.json())
+            .then(data => {
+                // Update stats on page
+                document.getElementById('farmerCount').textContent = data.farmers_count || 0;
+                document.getElementById('buyerCount').textContent = data.buyers_count || 0;
+                document.getElementById('productCount').textContent = data.products_count || 0;
+            })
+            .catch(error => {
+                console.error('Error fetching stats:', error);
+            });
+    });
+</script>
+{% endblock %}

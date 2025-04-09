@@ -1,0 +1,1027 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - KrishiConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        transition: transform 0.3s;
+    }
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+    .stats-icon {
+        font-size: 2.5rem;
+        opacity: 0.8;
+    }
+    .stats-title {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.8);
+    }
+    .stats-value {
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #4e73df, #224abe);
+    }
+    .bg-gradient-success {
+        background: linear-gradient(45deg, #1cc88a, #13855c);
+    }
+    .bg-gradient-info {
+        background: linear-gradient(45deg, #36b9cc, #258391);
+    }
+    .bg-gradient-warning {
+        background: linear-gradient(45deg, #f6c23e, #dda20a);
+    }
+    .chart-container {
+        height: 300px;
+    }
+    .user-table img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .user-table .user-name {
+        font-weight: 600;
+    }
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .status-verified {
+        background-color: #e3fcef;
+        color: #1cc88a;
+    }
+    .status-pending {
+        background-color: #fff8e6;
+        color: #f6c23e;
+    }
+    .category-card {
+        border-left: 4px solid #4e73df;
+    }
+    .sidebar-nav {
+        position: sticky;
+        top: 20px;
+    }
+    .nav-pills .nav-link.active {
+        background-color: #28a745;
+    }
+    .nav-pills .nav-link {
+        color: #333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i data-feather="settings"></i> Admin Dashboard</h2>
+    <div>
+        <button class="btn btn-outline-secondary" id="refresh-data-btn">
+            <i data-feather="refresh-cw"></i> Refresh Data
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Sidebar Navigation -->
+    <div class="col-md-3 mb-4">
+        <div class="card sidebar-nav">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Dashboard Navigation</h5>
+            </div>
+            <div class="card-body p-0">
+                <nav class="nav flex-column nav-pills">
+                    <a class="nav-link active" href="#overview" data-bs-toggle="tab">Overview</a>
+                    <a class="nav-link" href="#farmers" data-bs-toggle="tab">Farmers</a>
+                    <a class="nav-link" href="#buyers" data-bs-toggle="tab">Buyers</a>
+                    <a class="nav-link" href="#products" data-bs-toggle="tab">Products</a>
+                    <a class="nav-link" href="#analytics" data-bs-toggle="tab">Analytics</a>
+                </nav>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/" class="btn btn-sm btn-outline-secondary">
+                    <i data-feather="external-link"></i> View Website
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <div class="tab-content">
+            <!-- Overview Tab -->
+            <div class="tab-pane fade show active" id="overview">
+                <!-- Stats Cards -->
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card stats-card bg-gradient-primary text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="stats-title">TOTAL FARMERS</div>
+                                        <div class="stats-value" id="total-farmers">0</div>
+                                    </div>
+                                    <div class="stats-icon">
+                                        <i data-feather="users"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card stats-card bg-gradient-success text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="stats-title">TOTAL BUYERS</div>
+                                        <div class="stats-value" id="total-buyers">0</div>
+                                    </div>
+                                    <div class="stats-icon">
+                                        <i data-feather="shopping-bag"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card stats-card bg-gradient-info text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="stats-title">ACTIVE PRODUCTS</div>
+                                        <div class="stats-value" id="active-products">0</div>
+                                    </div>
+                                    <div class="stats-icon">
+                                        <i data-feather="package"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card stats-card bg-gradient-warning text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="stats-title">TOTAL PRODUCTS</div>
+                                        <div class="stats-value" id="total-products">0</div>
+                                    </div>
+                                    <div class="stats-icon">
+                                        <i data-feather="database"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Row -->
+                <div class="row">
+                    <div class="col-md-8 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">Products by Category</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="categoryChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">User Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="userDistributionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i data-feather="info"></i> 
+                            This is a placeholder for the activity log. In a full implementation, this would show recent user actions and system events.
+                        </div>
+                        
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i data-feather="user-plus" class="text-success me-2"></i>
+                                    <span>New farmer registered</span>
+                                    <small class="text-muted ms-2">Rajesh Kumar</small>
+                                </div>
+                                <span class="text-muted">5 minutes ago</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i data-feather="package" class="text-primary me-2"></i>
+                                    <span>New product added</span>
+                                    <small class="text-muted ms-2">Rice (25kg)</small>
+                                </div>
+                                <span class="text-muted">20 minutes ago</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i data-feather="user-check" class="text-warning me-2"></i>
+                                    <span>Farmer verified</span>
+                                    <small class="text-muted ms-2">Suresh Patel</small>
+                                </div>
+                                <span class="text-muted">1 hour ago</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i data-feather="shopping-bag" class="text-info me-2"></i>
+                                    <span>New buyer registered</span>
+                                    <small class="text-muted ms-2">Mega Grocers Ltd</small>
+                                </div>
+                                <span class="text-muted">3 hours ago</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i data-feather="trash-2" class="text-danger me-2"></i>
+                                    <span>Product removed</span>
+                                    <small class="text-muted ms-2">Wheat (100kg)</small>
+                                </div>
+                                <span class="text-muted">5 hours ago</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Farmers Tab -->
+            <div class="tab-pane fade" id="farmers">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Registered Farmers</h5>
+                        <div>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" placeholder="Search farmers..." id="search-farmers">
+                                <button class="btn btn-sm btn-outline-secondary" type="button">
+                                    <i data-feather="search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover user-table">
+                                <thead>
+                                    <tr>
+                                        <th>Farmer</th>
+                                        <th>Phone</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Products</th>
+                                        <th>Joined</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="farmers-table-body">
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <div class="spinner-border text-success" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <p class="mt-2">Loading farmers...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Verification Requests</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i data-feather="info"></i> 
+                            This is a placeholder for Aadhar verification requests that need admin review.
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Farmer</th>
+                                        <th>Phone</th>
+                                        <th>Aadhar Number</th>
+                                        <th>Requested</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ravi Sharma</td>
+                                        <td>9876543210</td>
+                                        <td>XXXX-XXXX-7890</td>
+                                        <td>2 hours ago</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success">Verify</button>
+                                            <button class="btn btn-sm btn-danger">Reject</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mohan Singh</td>
+                                        <td>8765432109</td>
+                                        <td>XXXX-XXXX-5678</td>
+                                        <td>5 hours ago</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success">Verify</button>
+                                            <button class="btn btn-sm btn-danger">Reject</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Buyers Tab -->
+            <div class="tab-pane fade" id="buyers">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Registered Buyers</h5>
+                        <div>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" placeholder="Search buyers..." id="search-buyers">
+                                <button class="btn btn-sm btn-outline-secondary" type="button">
+                                    <i data-feather="search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover user-table">
+                                <thead>
+                                    <tr>
+                                        <th>Buyer</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Type</th>
+                                        <th>Location</th>
+                                        <th>Joined</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="buyers-table-body">
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            <div class="spinner-border text-success" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <p class="mt-2">Loading buyers...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Buyer Types</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="buyerTypeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Buyer Activity</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i data-feather="info"></i> 
+                                    This is a placeholder for buyer activity tracking.
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="buyerActivityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Tab -->
+            <div class="tab-pane fade" id="products">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">All Products</h5>
+                        <div>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-sm" placeholder="Search products..." id="search-products">
+                                <select class="form-select form-select-sm" id="category-filter">
+                                    <option value="">All Categories</option>
+                                    <option value="Grains">Grains</option>
+                                    <option value="Pulses">Pulses</option>
+                                    <option value="Fruits">Fruits</option>
+                                    <option value="Vegetables">Vegetables</option>
+                                    <option value="Spices">Spices</option>
+                                    <option value="Oils">Oils</option>
+                                    <option value="Dairy">Dairy</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <button class="btn btn-sm btn-outline-secondary" type="button">
+                                    <i data-feather="search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Farmer</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="products-table-body">
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            <div class="spinner-border text-success" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <p class="mt-2">Loading products...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Top Categories</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Category</th>
+                                                <th>Products</th>
+                                                <th>Avg. Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="categories-table-body">
+                                            <!-- Will be populated dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Product Availability</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="availabilityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Analytics Tab -->
+            <div class="tab-pane fade" id="analytics">
+                <div class="alert alert-info">
+                    <i data-feather="info"></i> 
+                    This is a placeholder for detailed analytics. In a full implementation, 
+                    this would show advanced statistics and trends.
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">User Growth</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="userGrowthChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Product Listing Trends</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="productTrendsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Geographical Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-warning">
+                                    <i data-feather="alert-triangle"></i> 
+                                    This is a placeholder for a map showing the geographical distribution of users.
+                                </div>
+                                <div id="map-placeholder" style="height: 400px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                    <div class="text-center">
+                                        <i data-feather="map" style="width: 48px; height: 48px;"></i>
+                                        <h5 class="mt-3">India Map View</h5>
+                                        <p>Showing distribution of farmers and buyers across states</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fetch dashboard stats
+        fetchDashboardStats();
+        
+        // Handle refresh button
+        document.getElementById('refresh-data-btn').addEventListener('click', function() {
+            fetchDashboardStats();
+        });
+        
+        // Initialize charts
+        initializeCharts();
+    });
+    
+    // Fetch dashboard stats
+    function fetchDashboardStats() {
+        fetch('/api/dashboard/stats/')
+            .then(response => response.json())
+            .then(data => {
+                // Update stats cards
+                document.getElementById('total-farmers').textContent = data.farmers_count || 0;
+                document.getElementById('total-buyers').textContent = data.buyers_count || 0;
+                document.getElementById('active-products').textContent = data.products_count || 0;
+                document.getElementById('total-products').textContent = data.total_products_count || 0;
+                
+                // Update category chart if it exists
+                if (window.categoryChart && data.top_categories) {
+                    updateCategoryChart(data.top_categories);
+                }
+                
+                // Populate tables
+                populateFarmersTable();
+                populateBuyersTable();
+                populateProductsTable();
+                populateCategoriesTable(data.top_categories || []);
+            })
+            .catch(error => {
+                console.error('Error fetching dashboard stats:', error);
+                alert('Failed to fetch dashboard statistics. Please try again.');
+            });
+    }
+    
+    // Initialize charts
+    function initializeCharts() {
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        window.categoryChart = new Chart(categoryCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Grains', 'Vegetables', 'Fruits', 'Pulses', 'Spices'],
+                datasets: [{
+                    label: 'Number of Products',
+                    data: [120, 85, 70, 45, 30],
+                    backgroundColor: [
+                        '#4e73df',
+                        '#1cc88a',
+                        '#36b9cc',
+                        '#f6c23e',
+                        '#e74a3b'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // User Distribution Chart
+        const userDistCtx = document.getElementById('userDistributionChart').getContext('2d');
+        window.userDistributionChart = new Chart(userDistCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Farmers', 'Individual Buyers', 'Business Buyers', 'Government'],
+                datasets: [{
+                    data: [65, 25, 8, 2],
+                    backgroundColor: [
+                        '#1cc88a',
+                        '#4e73df',
+                        '#36b9cc',
+                        '#f6c23e'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Buyer Type Chart
+        const buyerTypeCtx = document.getElementById('buyerTypeChart').getContext('2d');
+        window.buyerTypeChart = new Chart(buyerTypeCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Individual', 'Business', 'Government'],
+                datasets: [{
+                    data: [70, 25, 5],
+                    backgroundColor: [
+                        '#4e73df',
+                        '#1cc88a',
+                        '#f6c23e'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Buyer Activity Chart
+        const buyerActivityCtx = document.getElementById('buyerActivityChart').getContext('2d');
+        window.buyerActivityChart = new Chart(buyerActivityCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Product Views',
+                    data: [120, 190, 150, 230, 180, 250],
+                    borderColor: '#4e73df',
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        
+        // Availability Chart
+        const availabilityCtx = document.getElementById('availabilityChart').getContext('2d');
+        window.availabilityChart = new Chart(availabilityCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Available', 'Unavailable'],
+                datasets: [{
+                    data: [75, 25],
+                    backgroundColor: [
+                        '#1cc88a',
+                        '#e74a3b'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // User Growth Chart
+        const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
+        window.userGrowthChart = new Chart(userGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [
+                    {
+                        label: 'Farmers',
+                        data: [10, 25, 40, 65, 90, 115],
+                        borderColor: '#1cc88a',
+                        tension: 0.1,
+                        fill: false
+                    },
+                    {
+                        label: 'Buyers',
+                        data: [5, 15, 25, 40, 55, 70],
+                        borderColor: '#4e73df',
+                        tension: 0.1,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        
+        // Product Trends Chart
+        const productTrendsCtx = document.getElementById('productTrendsChart').getContext('2d');
+        window.productTrendsChart = new Chart(productTrendsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [
+                    {
+                        label: 'New Products',
+                        data: [25, 35, 30, 45, 40, 55],
+                        backgroundColor: '#1cc88a'
+                    },
+                    {
+                        label: 'Removed Products',
+                        data: [10, 15, 12, 18, 16, 20],
+                        backgroundColor: '#e74a3b'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    
+    // Update category chart with new data
+    function updateCategoryChart(categories) {
+        if (!window.categoryChart) return;
+        
+        const labels = categories.map(cat => cat.name);
+        const data = categories.map(cat => cat.count);
+        
+        window.categoryChart.data.labels = labels;
+        window.categoryChart.data.datasets[0].data = data;
+        window.categoryChart.update();
+    }
+    
+    // Populate farmers table
+    function populateFarmersTable() {
+        // This is a placeholder that would fetch farmers from Firebase in a real implementation
+        const farmersTableBody = document.getElementById('farmers-table-body');
+        farmersTableBody.innerHTML = '';
+        
+        // Placeholder data
+        const farmers = [
+            { name: 'Rajesh Kumar', phone: '9876543210', location: 'Belgaum, Karnataka', status: 'verified', products: 5, joined: '15 Jan 2023' },
+            { name: 'Suresh Patel', phone: '8765432109', location: 'Ahmedabad, Gujarat', status: 'verified', products: 3, joined: '20 Feb 2023' },
+            { name: 'Mahesh Singh', phone: '7654321098', location: 'Jaipur, Rajasthan', status: 'pending', products: 0, joined: '5 Mar 2023' },
+            { name: 'Ramesh Sharma', phone: '6543210987', location: 'Bhopal, Madhya Pradesh', status: 'verified', products: 7, joined: '10 Apr 2023' },
+            { name: 'Dinesh Patel', phone: '5432109876', location: 'Pune, Maharashtra', status: 'pending', products: 0, joined: '25 May 2023' }
+        ];
+        
+        farmers.forEach(farmer => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="user-avatar bg-light text-dark d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px; border-radius: 50%;">
+                            <i data-feather="user" class="feather-small"></i>
+                        </div>
+                        <span class="user-name">${farmer.name}</span>
+                    </div>
+                </td>
+                <td>${farmer.phone}</td>
+                <td>${farmer.location}</td>
+                <td>
+                    <span class="status-badge ${farmer.status === 'verified' ? 'status-verified' : 'status-pending'}">
+                        ${farmer.status === 'verified' ? 'Verified' : 'Pending'}
+                    </span>
+                </td>
+                <td>${farmer.products}</td>
+                <td>${farmer.joined}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-secondary">
+                        <i data-feather="eye" class="feather-small"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger">
+                        <i data-feather="trash-2" class="feather-small"></i>
+                    </button>
+                </td>
+            `;
+            
+            farmersTableBody.appendChild(row);
+        });
+        
+        // Reinitialize feather icons
+        feather.replace();
+    }
+    
+    // Populate buyers table
+    function populateBuyersTable() {
+        // This is a placeholder that would fetch buyers from Firebase in a real implementation
+        const buyersTableBody = document.getElementById('buyers-table-body');
+        buyersTableBody.innerHTML = '';
+        
+        // Placeholder data
+        const buyers = [
+            { name: 'John Doe', email: 'john@example.com', phone: '9876543210', type: 'Individual', location: 'Bangalore, Karnataka', joined: '10 Jan 2023' },
+            { name: 'Mega Grocers Ltd', email: 'contact@megagrocers.com', phone: '8765432109', type: 'Business', location: 'Mumbai, Maharashtra', joined: '15 Feb 2023' },
+            { name: 'Food Corp of India', email: 'procurement@fci.gov.in', phone: '7654321098', type: 'Government', location: 'Delhi, Delhi', joined: '25 Mar 2023' },
+            { name: 'Jane Smith', email: 'jane@example.com', phone: '6543210987', type: 'Individual', location: 'Chennai, Tamil Nadu', joined: '5 Apr 2023' },
+            { name: 'Fresh Foods Co', email: 'info@freshfoods.com', phone: '5432109876', type: 'Business', location: 'Hyderabad, Telangana', joined: '20 May 2023' }
+        ];
+        
+        buyers.forEach(buyer => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="user-avatar bg-light text-dark d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px; border-radius: 50%;">
+                            <i data-feather="${buyer.type === 'Individual' ? 'user' : buyer.type === 'Business' ? 'briefcase' : 'landmark'}" class="feather-small"></i>
+                        </div>
+                        <span class="user-name">${buyer.name}</span>
+                    </div>
+                </td>
+                <td>${buyer.email}</td>
+                <td>${buyer.phone}</td>
+                <td>${buyer.type}</td>
+                <td>${buyer.location}</td>
+                <td>${buyer.joined}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-secondary">
+                        <i data-feather="eye" class="feather-small"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger">
+                        <i data-feather="trash-2" class="feather-small"></i>
+                    </button>
+                </td>
+            `;
+            
+            buyersTableBody.appendChild(row);
+        });
+        
+        // Reinitialize feather icons
+        feather.replace();
+    }
+    
+    // Populate products table
+    function populateProductsTable() {
+        // This is a placeholder that would fetch products from Firebase in a real implementation
+        const productsTableBody = document.getElementById('products-table-body');
+        productsTableBody.innerHTML = '';
+        
+        // Placeholder data
+        const products = [
+            { name: 'Rice', category: 'Grains', price: 2500, unit: 'quintal', quantity: 10, farmer: 'Rajesh Kumar', location: 'Belgaum, Karnataka', status: 'available' },
+            { name: 'Wheat', category: 'Grains', price: 2200, unit: 'quintal', quantity: 5, farmer: 'Suresh Patel', location: 'Ahmedabad, Gujarat', status: 'available' },
+            { name: 'Tomatoes', category: 'Vegetables', price: 25, unit: 'kg', quantity: 200, farmer: 'Ramesh Sharma', location: 'Bhopal, Madhya Pradesh', status: 'available' },
+            { name: 'Mangoes', category: 'Fruits', price: 100, unit: 'kg', quantity: 150, farmer: 'Rajesh Kumar', location: 'Belgaum, Karnataka', status: 'unavailable' },
+            { name: 'Turmeric', category: 'Spices', price: 150, unit: 'kg', quantity: 50, farmer: 'Ramesh Sharma', location: 'Bhopal, Madhya Pradesh', status: 'available' }
+        ];
+        
+        products.forEach(product => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="user-avatar bg-light text-dark d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px; border-radius: 50%;">
+                            <i data-feather="package" class="feather-small"></i>
+                        </div>
+                        <span class="user-name">${product.name}</span>
+                    </div>
+                </td>
+                <td>${product.category}</td>
+                <td>₹${product.price} per ${product.unit}</td>
+                <td>${product.quantity} ${product.unit}</td>
+                <td>${product.farmer}</td>
+                <td>${product.location}</td>
+                <td>
+                    <span class="status-badge ${product.status === 'available' ? 'status-verified' : 'status-pending'}">
+                        ${product.status === 'available' ? 'Available' : 'Unavailable'}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-secondary">
+                        <i data-feather="eye" class="feather-small"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger">
+                        <i data-feather="trash-2" class="feather-small"></i>
+                    </button>
+                </td>
+            `;
+            
+            productsTableBody.appendChild(row);
+        });
+        
+        // Reinitialize feather icons
+        feather.replace();
+    }
+    
+    // Populate categories table
+    function populateCategoriesTable(categories) {
+        const categoriesTableBody = document.getElementById('categories-table-body');
+        categoriesTableBody.innerHTML = '';
+        
+        if (!categories || categories.length === 0) {
+            categories = [
+                { name: 'Grains', count: 120, avgPrice: 2350 },
+                { name: 'Vegetables', count: 85, avgPrice: 30 },
+                { name: 'Fruits', count: 70, avgPrice: 75 },
+                { name: 'Pulses', count: 45, avgPrice: 90 },
+                { name: 'Spices', count: 30, avgPrice: 200 }
+            ];
+        }
+        
+        categories.forEach(category => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${category.name}</td>
+                <td>${category.count}</td>
+                <td>₹${category.avgPrice || 'N/A'}</td>
+            `;
+            
+            categoriesTableBody.appendChild(row);
+        });
+    }
+</script>
+{% endblock %}

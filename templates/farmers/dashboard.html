@@ -1,0 +1,642 @@
+{% extends 'base.html' %}
+
+{% block title %}Farmer Dashboard - KrishiConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        border-left: 4px solid #28a745;
+    }
+    .profile-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+    }
+    .product-card {
+        transition: transform 0.3s;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .verification-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    .crop-suggestion {
+        border-left: 4px solid #17a2b8;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i data-feather="home"></i> Farmer Dashboard</h2>
+    <div>
+        <a href="/api/farmers/add-product/" class="btn btn-success">
+            <i data-feather="plus"></i> Add New Product
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Farmer Profile Section -->
+    <div class="col-md-4 mb-4">
+        <div class="card profile-section">
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="position-relative d-inline-block">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; margin: 0 auto;">
+                            <i data-feather="user" style="width: 60px; height: 60px;"></i>
+                        </div>
+                        <div id="verification-badge" class="verification-badge d-none">
+                            <span class="badge bg-success"><i data-feather="check-circle" class="feather-small"></i> Verified</span>
+                        </div>
+                    </div>
+                    <h4 id="farmer-name" class="mt-3">Loading...</h4>
+                    <p id="farmer-location" class="text-muted">Loading...</p>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span><i data-feather="phone"></i> Phone:</span>
+                        <span id="farmer-phone">Loading...</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span><i data-feather="credit-card"></i> Aadhar Status:</span>
+                        <span id="aadhar-status">Loading...</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span><i data-feather="calendar"></i> Joined:</span>
+                        <span id="join-date">Loading...</span>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 mt-4">
+                    <a href="#" class="btn btn-outline-success btn-sm" id="edit-profile-btn">
+                        <i data-feather="edit"></i> Edit Profile
+                    </a>
+                    <button class="btn btn-outline-danger btn-sm" id="logout-btn">
+                        <i data-feather="log-out"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Dashboard Content -->
+    <div class="col-md-8">
+        <!-- Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Total Products</h5>
+                        <h2 class="mt-2 mb-0" id="total-products">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Available Now</h5>
+                        <h2 class="mt-2 mb-0" id="available-products">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stats-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Total Views</h5>
+                        <h2 class="mt-2 mb-0" id="total-views">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Crop Suggestions -->
+        <div class="card mb-4 crop-suggestion">
+            <div class="card-header">
+                <h5><i data-feather="trending-up"></i> AI Crop Suggestions</h5>
+            </div>
+            <div class="card-body">
+                <div id="suggestions-loading" class="text-center">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Loading crop suggestions...</p>
+                </div>
+                
+                <div id="suggestions-content" class="d-none">
+                    <div class="alert alert-info">
+                        <i data-feather="info"></i> These suggestions are based on your location, current season, and market demand.
+                    </div>
+                    
+                    <div class="row" id="suggestions-container">
+                        <!-- Suggestions will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Products -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i data-feather="package"></i> Your Products</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="product-filter" data-bs-toggle="dropdown">
+                        Filter
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item active" href="#" data-filter="all">All Products</a></li>
+                        <li><a class="dropdown-item" href="#" data-filter="available">Available Only</a></li>
+                        <li><a class="dropdown-item" href="#" data-filter="unavailable">Unavailable</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="products-loading" class="text-center">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Loading your products...</p>
+                </div>
+                
+                <div id="no-products" class="text-center d-none">
+                    <div class="my-5">
+                        <i data-feather="package" style="width: 48px; height: 48px;"></i>
+                        <h5 class="mt-3">No Products Listed Yet</h5>
+                        <p>Start selling by adding your first product.</p>
+                        <a href="/api/farmers/add-product/" class="btn btn-success">
+                            <i data-feather="plus"></i> Add Product
+                        </a>
+                    </div>
+                </div>
+                
+                <div id="products-container" class="row d-none">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-profile-form">
+                    <div class="mb-3">
+                        <label for="edit-full-name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="edit-full-name" name="full_name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit-village" class="form-label">Village</label>
+                        <input type="text" class="form-control" id="edit-village" name="village" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit-district" class="form-label">District</label>
+                        <input type="text" class="form-control" id="edit-district" name="district" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit-state" class="form-label">State</label>
+                        <select class="form-select" id="edit-state" name="state" required>
+                            <option value="">Select State</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="save-profile-btn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+<script src="/static/js/firebase-auth.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is authenticated
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) {
+                // If not logged in, redirect to login page
+                window.location.href = '/api/farmers/login/';
+                return;
+            }
+            
+            // User is logged in, load farmer profile and data
+            loadFarmerProfile(user);
+            loadFarmerProducts(user);
+            loadCropSuggestions(user);
+        });
+        
+        // Load farmer profile
+        function loadFarmerProfile(user) {
+            user.getIdToken().then(token => {
+                fetch('/api/farmers/profile/', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch profile');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Update profile details
+                    document.getElementById('farmer-name').textContent = data.full_name || 'N/A';
+                    
+                    const village = data.address?.village || '';
+                    const district = data.address?.district || '';
+                    const state = data.address?.state || '';
+                    document.getElementById('farmer-location').textContent = `${village}, ${district}, ${state}`;
+                    
+                    document.getElementById('farmer-phone').textContent = data.phone_number || 'N/A';
+                    
+                    // Format join date
+                    let joinDate = 'N/A';
+                    if (data.created_at) {
+                        const date = new Date(data.created_at._seconds * 1000);
+                        joinDate = date.toLocaleDateString();
+                    }
+                    document.getElementById('join-date').textContent = joinDate;
+                    
+                    // Show verification badge if verified
+                    if (data.is_verified) {
+                        document.getElementById('verification-badge').classList.remove('d-none');
+                        document.getElementById('aadhar-status').innerHTML = '<span class="badge bg-success">Verified</span>';
+                    } else {
+                        document.getElementById('aadhar-status').innerHTML = '<span class="badge bg-warning text-dark">Pending</span>';
+                    }
+                    
+                    // Populate edit profile form
+                    document.getElementById('edit-full-name').value = data.full_name || '';
+                    document.getElementById('edit-village').value = data.address?.village || '';
+                    document.getElementById('edit-district').value = data.address?.district || '';
+                    document.getElementById('edit-state').value = data.address?.state || '';
+                })
+                .catch(error => {
+                    console.error('Error loading profile:', error);
+                    alert('Failed to load your profile. Please try again.');
+                });
+            });
+        }
+        
+        // Load farmer products
+        function loadFarmerProducts(user) {
+            user.getIdToken().then(token => {
+                fetch(`/api/products/farmer/${user.uid}/?all=true`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch products');
+                    }
+                    return response.json();
+                })
+                .then(products => {
+                    // Hide loading indicator
+                    document.getElementById('products-loading').classList.add('d-none');
+                    
+                    if (products.length === 0) {
+                        // Show no products message
+                        document.getElementById('no-products').classList.remove('d-none');
+                    } else {
+                        // Show products container
+                        document.getElementById('products-container').classList.remove('d-none');
+                        
+                        // Update stats
+                        document.getElementById('total-products').textContent = products.length;
+                        document.getElementById('available-products').textContent = products.filter(p => p.is_available).length;
+                        document.getElementById('total-views').textContent = '0'; // This would be replaced with actual view data
+                        
+                        // Render products
+                        renderProducts(products);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading products:', error);
+                    document.getElementById('products-loading').classList.add('d-none');
+                    document.getElementById('products-container').innerHTML = `
+                        <div class="alert alert-danger">
+                            Failed to load products. Please refresh the page.
+                        </div>
+                    `;
+                });
+            });
+        }
+        
+        // Render products
+        function renderProducts(products) {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const imageUrl = product.image_urls && product.image_urls.length > 0 
+                    ? product.image_urls[0] 
+                    : 'https://via.placeholder.com/150?text=No+Image';
+                
+                const availability = product.is_available 
+                    ? '<span class="badge bg-success">Available</span>' 
+                    : '<span class="badge bg-secondary">Unavailable</span>';
+                
+                const card = document.createElement('div');
+                card.className = 'col-md-6 mb-4';
+                card.innerHTML = `
+                    <div class="card product-card h-100">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="${imageUrl}" class="img-fluid rounded-start" alt="${product.name}" style="height: 100%; object-fit: cover;">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="card-title">${product.name}</h5>
+                                        ${availability}
+                                    </div>
+                                    <p class="card-text text-muted">${product.category}</p>
+                                    <p class="card-text">₹${product.price} per ${product.unit}</p>
+                                    <p class="card-text"><small class="text-muted">Quantity: ${product.quantity} ${product.unit}</small></p>
+                                    <div class="d-flex justify-content-end">
+                                        <button class="btn btn-sm btn-outline-success me-2 edit-product-btn" data-id="${product.id}">
+                                            <i data-feather="edit-2"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger delete-product-btn" data-id="${product.id}">
+                                            <i data-feather="trash-2"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            // Re-initialize feather icons
+            feather.replace();
+            
+            // Add event listeners for edit and delete buttons
+            document.querySelectorAll('.edit-product-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    window.location.href = `/api/farmers/edit-product/${productId}/`;
+                });
+            });
+            
+            document.querySelectorAll('.delete-product-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    if (confirm('Are you sure you want to remove this product?')) {
+                        deleteProduct(productId);
+                    }
+                });
+            });
+        }
+        
+        // Delete product
+        function deleteProduct(productId) {
+            firebase.auth().currentUser.getIdToken()
+                .then(token => {
+                    return fetch(`/api/products/${productId}/delete/`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete product');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Product removed successfully');
+                        // Reload products
+                        loadFarmerProducts(firebase.auth().currentUser);
+                    } else {
+                        throw new Error(data.message || 'Failed to delete product');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting product:', error);
+                    alert('Failed to delete product: ' + error.message);
+                });
+        }
+        
+        // Load crop suggestions
+        function loadCropSuggestions(user) {
+            user.getIdToken().then(token => {
+                fetch('/api/products/suggestions/', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch suggestions');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Hide loading indicator
+                    document.getElementById('suggestions-loading').classList.add('d-none');
+                    document.getElementById('suggestions-content').classList.remove('d-none');
+                    
+                    // Render suggestions
+                    const container = document.getElementById('suggestions-container');
+                    container.innerHTML = '';
+                    
+                    data.suggestions.forEach(suggestion => {
+                        const card = document.createElement('div');
+                        card.className = 'col-md-4 mb-3';
+                        card.innerHTML = `
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">${suggestion.crop}</h5>
+                                    <div class="mb-2">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: ${suggestion.confidence}%"></div>
+                                        </div>
+                                        <small class="text-muted">${suggestion.confidence}% confidence</small>
+                                    </div>
+                                    <p class="card-text"><small>${suggestion.reason}</small></p>
+                                    <p class="card-text">Expected price: ${suggestion.expected_price}</p>
+                                </div>
+                            </div>
+                        `;
+                        
+                        container.appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading suggestions:', error);
+                    document.getElementById('suggestions-loading').classList.add('d-none');
+                    document.getElementById('suggestions-content').classList.remove('d-none');
+                    document.getElementById('suggestions-container').innerHTML = `
+                        <div class="alert alert-warning col-12">
+                            <i data-feather="alert-triangle"></i> 
+                            Could not load crop suggestions at this time. Please try again later.
+                        </div>
+                    `;
+                    feather.replace();
+                });
+            });
+        }
+        
+        // Edit profile
+        document.getElementById('edit-profile-btn').addEventListener('click', function() {
+            const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+            modal.show();
+        });
+        
+        document.getElementById('save-profile-btn').addEventListener('click', function() {
+            const form = document.getElementById('edit-profile-form');
+            const formData = {
+                full_name: document.getElementById('edit-full-name').value,
+                village: document.getElementById('edit-village').value,
+                district: document.getElementById('edit-district').value,
+                state: document.getElementById('edit-state').value
+            };
+            
+            firebase.auth().currentUser.getIdToken()
+                .then(token => {
+                    return fetch('/api/farmers/profile/update/', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update profile');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Hide modal
+                        bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+                        
+                        // Reload profile
+                        loadFarmerProfile(firebase.auth().currentUser);
+                        
+                        alert('Profile updated successfully');
+                    } else {
+                        throw new Error(data.message || 'Failed to update profile');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating profile:', error);
+                    alert('Failed to update profile: ' + error.message);
+                });
+        });
+        
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                firebase.auth().signOut()
+                    .then(() => {
+                        // Redirect to home page
+                        window.location.href = '/';
+                    })
+                    .catch(error => {
+                        console.error('Error signing out:', error);
+                    });
+            }
+        });
+        
+        // Filter products
+        document.querySelectorAll('.dropdown-item[data-filter]').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active filter
+                document.querySelectorAll('.dropdown-item[data-filter]').forEach(el => {
+                    el.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                document.getElementById('product-filter').textContent = 
+                    filter === 'all' ? 'All Products' : 
+                    filter === 'available' ? 'Available Only' : 'Unavailable';
+                
+                // Filter products
+                const products = Array.from(document.querySelectorAll('.product-card'));
+                
+                products.forEach(product => {
+                    const isAvailable = product.querySelector('.badge').classList.contains('bg-success');
+                    const shouldShow = 
+                        filter === 'all' || 
+                        (filter === 'available' && isAvailable) || 
+                        (filter === 'unavailable' && !isAvailable);
+                    
+                    product.closest('.col-md-6').style.display = shouldShow ? 'block' : 'none';
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
