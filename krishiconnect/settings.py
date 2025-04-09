@@ -13,7 +13,17 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default-dev-key-cha
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*', '0.0.0.0', 'localhost', '127.0.0.1', 'c65793e6-4c6d-47e9-8fee-254b0a427915-00-1p83phwy5tkp6.kirk.replit.dev']
+ALLOWED_HOSTS = [
+    '*',
+    '0.0.0.0',
+    'localhost',
+    '127.0.0.1',
+    '.replit.dev',
+    '.replit.app',
+    '.replit.co',
+    'c65793e6-4c6d-47e9-8fee-254b0a427915-00-1p83phwy5tkp6.kirk.replit.dev',
+    'c65793e6-4c6d-47e9-8fee-254b0a427915-00-1p83phwy5tkp6.kirk.replit.co'
+]
 
 # Application definition
 
@@ -119,6 +129,15 @@ REST_FRAMEWORK = {
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.replit.dev',
+    'https://*.replit.app',
+    'https://*.replit.co',
+    'https://c65793e6-4c6d-47e9-8fee-254b0a427915-00-1p83phwy5tkp6.kirk.replit.dev',
+    'https://c65793e6-4c6d-47e9-8fee-254b0a427915-00-1p83phwy5tkp6.kirk.replit.co'
+]
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
