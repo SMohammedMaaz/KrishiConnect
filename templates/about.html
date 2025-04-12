@@ -1,0 +1,481 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - KrishiConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-hero {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.9) 0%, rgba(32, 134, 55, 0.95) 100%), url('https://images.unsplash.com/photo-1629392554711-1b3822afc4d5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 100px 0 70px;
+        text-align: center;
+    }
+    
+    .mission-section {
+        padding: 80px 0;
+    }
+    
+    .mission-card {
+        background: white;
+        border-radius: 10px;
+        padding: 40px 30px;
+        height: 100%;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+    }
+    
+    .mission-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .mission-icon {
+        width: 80px;
+        height: 80px;
+        background-color: rgba(40, 167, 69, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+    }
+    
+    .mission-icon i {
+        color: var(--primary-color);
+    }
+    
+    .team-section {
+        padding: 80px 0;
+        background-color: #f8f9fa;
+    }
+    
+    .team-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        transition: transform 0.3s;
+    }
+    
+    .team-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .team-img {
+        height: 250px;
+        width: 100%;
+        object-fit: cover;
+    }
+    
+    .team-info {
+        padding: 25px;
+        text-align: center;
+    }
+    
+    .team-social {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .team-social a {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: #f1f3f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        transition: all 0.3s;
+    }
+    
+    .team-social a:hover {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .timeline-section {
+        padding: 80px 0;
+    }
+    
+    .timeline {
+        position: relative;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .timeline::after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        background-color: var(--primary-color);
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        margin-left: -1px;
+    }
+    
+    .timeline-container {
+        padding: 10px 40px;
+        position: relative;
+        width: 50%;
+    }
+    
+    .timeline-container.left {
+        left: 0;
+    }
+    
+    .timeline-container.right {
+        left: 50%;
+    }
+    
+    .timeline-container::after {
+        content: '';
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        right: -12px;
+        background-color: white;
+        border: 4px solid var(--primary-color);
+        top: 15px;
+        border-radius: 50%;
+        z-index: 1;
+    }
+    
+    .timeline-container.right::after {
+        left: -12px;
+    }
+    
+    .timeline-content {
+        padding: 20px 30px;
+        background-color: white;
+        position: relative;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .timeline-content h3 {
+        margin-top: 0;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    .partners-section {
+        padding: 80px 0;
+    }
+    
+    .partner-logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100px;
+        padding: 20px;
+        margin-bottom: 30px;
+        filter: grayscale(100%);
+        opacity: 0.7;
+        transition: all 0.3s;
+    }
+    
+    .partner-logo:hover {
+        filter: grayscale(0%);
+        opacity: 1;
+    }
+    
+    .partner-logo img {
+        max-width: 100%;
+        max-height: 60px;
+    }
+    
+    @media (max-width: 768px) {
+        .timeline::after {
+            left: 31px;
+        }
+        
+        .timeline-container {
+            width: 100%;
+            padding-left: 70px;
+            padding-right: 25px;
+        }
+        
+        .timeline-container.right {
+            left: 0;
+        }
+        
+        .timeline-container.left::after, 
+        .timeline-container.right::after {
+            left: 19px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="container">
+        <h1 class="display-4 mb-4">About KrishiConnect</h1>
+        <p class="lead mb-4">Empowering farmers and transforming agriculture through technology</p>
+        <div class="d-flex justify-content-center">
+            <div class="mx-2">
+                <h4><span class="counter" data-target="5000">0</span>+</h4>
+                <p>Farmers</p>
+            </div>
+            <div class="mx-2">
+                <h4><span class="counter" data-target="2000">0</span>+</h4>
+                <p>Buyers</p>
+            </div>
+            <div class="mx-2">
+                <h4><span class="counter" data-target="10000">0</span>+</h4>
+                <p>Products</p>
+            </div>
+            <div class="mx-2">
+                <h4>₹<span class="counter" data-target="50">0</span>M+</h4>
+                <p>Transactions</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Mission Section -->
+<section class="mission-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Our Vision & Mission</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">We're building a sustainable and efficient agricultural ecosystem</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i data-feather="target" style="width: 40px; height: 40px;"></i>
+                    </div>
+                    <h4 class="text-center mb-3">Our Vision</h4>
+                    <p class="text-center mb-0">To create a self-reliant farming community with direct access to markets, fair prices, and innovative technologies.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i data-feather="award" style="width: 40px; height: 40px;"></i>
+                    </div>
+                    <h4 class="text-center mb-3">Our Mission</h4>
+                    <p class="text-center mb-0">To eliminate middlemen, provide transparent pricing, and leverage technology to empower farmers and connect them directly with buyers.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i data-feather="heart" style="width: 40px; height: 40px;"></i>
+                    </div>
+                    <h4 class="text-center mb-3">Our Values</h4>
+                    <p class="text-center mb-0">Transparency, Integrity, Innovation, Sustainability, and Community-first approach are at the core of everything we do.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Story Timeline -->
+<section class="timeline-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Our Journey</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">The story of KrishiConnect from inception to impact</p>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-container left" data-aos="fade-right">
+                <div class="timeline-content">
+                    <h3>2020</h3>
+                    <p>The idea of KrishiConnect was born during a rural field study, where we witnessed the challenges faced by farmers in getting fair prices for their produce.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-container right" data-aos="fade-left">
+                <div class="timeline-content">
+                    <h3>2021</h3>
+                    <p>After months of research and planning, we launched the first prototype of KrishiConnect in three districts, connecting 100 farmers with local buyers.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-container left" data-aos="fade-right">
+                <div class="timeline-content">
+                    <h3>2022</h3>
+                    <p>Secured our first round of funding and expanded to multiple states. Introduced AI-powered crop suggestions and weather advisory features.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-container right" data-aos="fade-left">
+                <div class="timeline-content">
+                    <h3>2023</h3>
+                    <p>Reached the milestone of 1000+ farmers and 500+ buyers on the platform. Launched mobile application with multilingual support.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-container left" data-aos="fade-right">
+                <div class="timeline-content">
+                    <h3>2024</h3>
+                    <p>Implemented direct UPI payments, expanded to all major agricultural states, and introduced bulk procurement features for institutional buyers.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-container right" data-aos="fade-left">
+                <div class="timeline-content">
+                    <h3>2025</h3>
+                    <p>Currently serving 5000+ farmers and 2000+ buyers, with continuous innovation and feature enhancements to better serve our growing community.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Team Section -->
+<section class="team-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Meet Our Team</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">The dedicated professionals behind KrishiConnect</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" alt="CEO" class="team-img">
+                    <div class="team-info">
+                        <h5>Rajesh Kumar</h5>
+                        <p class="text-muted mb-3">Founder & CEO</p>
+                        <p class="small">Agricultural expert with 15+ years of experience in agri-tech innovations.</p>
+                        <div class="team-social">
+                            <a href="#"><i data-feather="linkedin" class="feather-small"></i></a>
+                            <a href="#"><i data-feather="twitter" class="feather-small"></i></a>
+                            <a href="#"><i data-feather="mail" class="feather-small"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80" alt="CTO" class="team-img">
+                    <div class="team-info">
+                        <h5>Priya Sharma</h5>
+                        <p class="text-muted mb-3">CTO</p>
+                        <p class="small">Tech leader with expertise in AI and mobile application development.</p>
+                        <div class="team-social">
+                            <a href="#"><i data-feather="linkedin" class="feather-small"></i></a>
+                            <a href="#"><i data-feather="github" class="feather-small"></i></a>
+                            <a href="#"><i data-feather="mail" class="feather-small"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" alt="COO" class="team-img">
+                    <div class="team-info">
+                        <h5>Arjun Patel</h5>
+                        <p class="text-muted mb-3">COO</p>
+                        <p class="small">Operations expert with background in supply chain management and logistics.</p>
+                        <div class="team-social">
+                            <a href="#"><i data-feather="linkedin" class="feather-small"></i></a>
+                            <a href="#"><i data-feather="twitter" class="feather-small"></i></a>
+                            <a href="#"><i data-feather="mail" class="feather-small"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="team-card">
+                    <img src="https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1769&q=80" alt="Marketing Director" class="team-img">
+                    <div class="team-info">
+                        <h5>Sunita Reddy</h5>
+                        <p class="text-muted mb-3">Marketing Director</p>
+                        <p class="small">Marketing strategist with experience in rural outreach and farmer engagement.</p>
+                        <div class="team-social">
+                            <a href="#"><i data-feather="linkedin" class="feather-small"></i></a>
+                            <a href="#"><i data-feather="instagram" class="feather-small"></i></a>
+                            <a href="#"><i data-feather="mail" class="feather-small"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Partners Section -->
+<section class="partners-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Our Partners</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Organizations that support our mission</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="partner-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/National_Bank_for_Agriculture_and_Rural_Development_%28India%29_Logo.svg" alt="NABARD">
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="partner-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Make_in_India_logo.svg" alt="Make in India">
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="partner-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Indian_Council_of_Agricultural_Research_Logo.png" alt="ICAR">
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="partner-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Startup_India_logo.png" alt="Startup India">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mb-4 mb-lg-0" data-aos="fade-right">
+                <h2>Join us in revolutionizing agriculture</h2>
+                <p class="lead mb-0">Together, we can build a better future for farmers and consumers alike.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end" data-aos="fade-left">
+                <div class="d-flex justify-content-center justify-content-lg-end gap-3 flex-wrap">
+                    <a href="/contact/" class="btn btn-success btn-lg">
+                        <i data-feather="mail" class="me-2"></i> Contact Us
+                    </a>
+                    <a href="/api/farmers/register-view/" class="btn btn-outline-success btn-lg">
+                        <i data-feather="user-plus" class="me-2"></i> Join Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize animated counters
+        initializeCounters();
+    });
+</script>
+{% endblock %}

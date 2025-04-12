@@ -1,0 +1,443 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - KrishiConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .contact-hero {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.9) 0%, rgba(32, 134, 55, 0.95) 100%), url('https://images.unsplash.com/photo-1560265036-021b3652a92b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2069&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+    }
+    
+    .contact-form-section {
+        padding: 80px 0;
+        background-color: #f8f9fa;
+    }
+    
+    .contact-card {
+        background: white;
+        border-radius: 10px;
+        padding: 40px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);
+    }
+    
+    .contact-info-section {
+        padding: 80px 0;
+    }
+    
+    .contact-info-card {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+    }
+    
+    .contact-info-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .contact-icon {
+        width: 60px;
+        height: 60px;
+        background-color: rgba(40, 167, 69, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+    
+    .contact-icon i {
+        color: var(--primary-color);
+    }
+    
+    .map-container {
+        height: 400px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .faq-section {
+        padding: 80px 0;
+        background-color: #f8f9fa;
+    }
+    
+    .accordion-item {
+        border: none;
+        background-color: transparent;
+        margin-bottom: 15px;
+    }
+    
+    .accordion-button {
+        background-color: white;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        font-weight: 500;
+    }
+    
+    .accordion-button:not(.collapsed) {
+        color: var(--primary-color);
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .accordion-button:focus {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-color: #e9ecef;
+    }
+    
+    .accordion-button::after {
+        background-size: 16px;
+        height: 16px;
+        width: 16px;
+    }
+    
+    .accordion-body {
+        background-color: white;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+    
+    .custom-checkbox .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    .newsletter-section {
+        padding: 80px 0;
+    }
+    
+    .newsletter-card {
+        background: linear-gradient(135deg, #28a745 0%, #20a8d8 100%);
+        border-radius: 10px;
+        padding: 40px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+        color: white;
+    }
+    
+    .input-group-newsletter .form-control {
+        height: 50px;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+        padding-left: 20px;
+    }
+    
+    .input-group-newsletter .btn {
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+        padding-right: 30px;
+        padding-left: 30px;
+        background-color: #212529;
+        border-color: #212529;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="contact-hero">
+    <div class="container">
+        <h1 class="display-4 mb-3" data-aos="fade-up">Contact Us</h1>
+        <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">We'd love to hear from you. Get in touch with us!</p>
+    </div>
+</section>
+
+<!-- Contact Form Section -->
+<section class="contact-form-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="contact-card" data-aos="fade-up">
+                    <h3 class="mb-4 text-center">Send Us a Message</h3>
+                    
+                    <form id="contact-form">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Your Email</label>
+                                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="subject" class="form-label">Subject</label>
+                                    <select class="form-select" id="subject" required>
+                                        <option value="" selected disabled>Select a subject</option>
+                                        <option value="General Inquiry">General Inquiry</option>
+                                        <option value="Technical Support">Technical Support</option>
+                                        <option value="Account Issues">Account Issues</option>
+                                        <option value="Partnership Opportunities">Partnership Opportunities</option>
+                                        <option value="Feedback">Feedback</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Your Message</label>
+                                    <textarea class="form-control" id="message" rows="5" placeholder="Type your message here..." required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="mb-4 form-check custom-checkbox">
+                                    <input type="checkbox" class="form-check-input" id="privacy-policy" required>
+                                    <label class="form-check-label" for="privacy-policy">I agree to the <a href="/privacy-policy/" class="text-success">Privacy Policy</a> and consent to the processing of my data.</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="d-grid">
+                                    <button type="submit" id="submit-btn" class="btn btn-success btn-lg">
+                                        <span id="submit-spinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                                        Send Message
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Information Section -->
+<section class="contact-info-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Get in Touch</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Connect with us through any of these channels</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="contact-info-card text-center">
+                    <div class="contact-icon">
+                        <i data-feather="map-pin" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h5>Our Address</h5>
+                    <p class="mb-0">KrishiConnect Tower, 123 Agri Road, Tech Park, Bangalore - 560001, Karnataka, India</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="contact-info-card text-center">
+                    <div class="contact-icon">
+                        <i data-feather="phone" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h5>Call Us</h5>
+                    <p class="mb-1">Toll Free: 1800-123-4567</p>
+                    <p class="mb-0">Support: +91 987 654 3210</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="contact-info-card text-center">
+                    <div class="contact-icon">
+                        <i data-feather="mail" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h5>Email Us</h5>
+                    <p class="mb-1">info@krishiconnect.com</p>
+                    <p class="mb-0">support@krishiconnect.com</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-12" data-aos="fade-up" data-aos-delay="500">
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248849.886026313!2d77.49085275394618!3d12.95384580358727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4fe0!2sBengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1654158061799!5m2!1sen!2sin" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Frequently Asked Questions</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Quick answers to questions you may have</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="200">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                How do I register as a farmer on KrishiConnect?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <p>To register as a farmer, click on "Join as Farmer" on the homepage. You'll need to provide your phone number for verification, then complete your profile by entering personal details and Aadhar number for verification. Once verified, you can start listing your products.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="300">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                What fees does KrishiConnect charge for transactions?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <p>KrishiConnect charges a minimal service fee of 2% on successful transactions. This fee helps us maintain the platform, provide customer support, and continue developing new features. There are no registration fees or monthly subscriptions required.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="400">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                How does the payment system work?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <p>KrishiConnect offers secure payment options including UPI, bank transfers, and cash on delivery. Funds are held in escrow until the buyer confirms receipt of the products. This ensures both parties are protected during transactions. You can withdraw your earnings to your bank account at any time.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="500">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                How can I get the crop suggestions for my farm?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <p>To get personalized crop suggestions, login to your farmer dashboard and navigate to the "Crop Advisory" section. Our AI system uses your location, soil type, climate data, and market trends to recommend the best crops to grow. You can also input specific parameters about your farm for more tailored suggestions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="600">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                Is my data secure on KrishiConnect?
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <p>Yes, we take data security very seriously. All personal information is encrypted and stored securely. We use industry-standard security protocols to protect your data. Your Aadhar information is verified but not stored in our database. We never share your personal information with third parties without your explicit consent.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="newsletter-card" data-aos="fade-up">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-4 mb-lg-0">
+                            <h3>Stay Updated</h3>
+                            <p>Subscribe to our newsletter for the latest agricultural news, market trends, and product updates.</p>
+                        </div>
+                        <div class="col-lg-6">
+                            <form id="newsletter-form">
+                                <div class="input-group input-group-newsletter">
+                                    <input type="email" class="form-control" placeholder="Enter your email" aria-label="Enter your email" required>
+                                    <button class="btn btn-dark" type="submit">Subscribe</button>
+                                </div>
+                                <div class="form-text text-white-50 mt-2">We respect your privacy. No spam, ever.</div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Contact form submission
+        const contactForm = document.getElementById('contact-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitSpinner = document.getElementById('submit-spinner');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                submitSpinner.classList.remove('d-none');
+                
+                // Simulate form submission with a delay
+                setTimeout(function() {
+                    // Hide loading state
+                    submitBtn.disabled = false;
+                    submitSpinner.classList.add('d-none');
+                    
+                    // Show success message
+                    alert('Thank you for your message! We will get back to you soon.');
+                    
+                    // Reset form
+                    contactForm.reset();
+                }, 1500);
+            });
+        }
+        
+        // Newsletter form submission
+        const newsletterForm = document.getElementById('newsletter-form');
+        
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show success message
+                alert('Thank you for subscribing to our newsletter!');
+                
+                // Reset form
+                newsletterForm.reset();
+            });
+        }
+    });
+</script>
+{% endblock %}
