@@ -1,0 +1,1354 @@
+{% extends 'base.html' %}
+
+{% block title %}Market Trends - KrishiConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .market-hero {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.9) 0%, rgba(32, 134, 55, 0.95) 100%), url('https://images.unsplash.com/photo-1543286386-713bdd548da4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+    }
+    
+    .market-section {
+        padding: 80px 0;
+    }
+    
+    .market-card {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        height: 100%;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+    }
+    
+    .market-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .price-chart-container {
+        height: 400px;
+        margin-bottom: 20px;
+    }
+    
+    .trend-up {
+        color: var(--success-color);
+    }
+    
+    .trend-down {
+        color: var(--danger-color);
+    }
+    
+    .market-table {
+        width: 100%;
+    }
+    
+    .market-table th {
+        background-color: #f8f9fa;
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+    }
+    
+    .market-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f1f3f5;
+    }
+    
+    .market-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .market-filter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .filter-group {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .price-change-badge {
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .price-change-badge.up {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+    }
+    
+    .price-change-badge.down {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: var(--danger-color);
+    }
+    
+    .info-box {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .info-box h5 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .insights-section {
+        background-color: #f8f9fa;
+        padding: 80px 0;
+    }
+    
+    .insight-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        transition: transform 0.3s;
+    }
+    
+    .insight-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .insight-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 20px;
+    }
+    
+    .insight-body {
+        padding: 20px;
+    }
+    
+    .insight-list {
+        padding-left: 0;
+        list-style: none;
+    }
+    
+    .insight-list li {
+        display: flex;
+        align-items: flex-start;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f3f5;
+    }
+    
+    .insight-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .insight-list li i {
+        margin-right: 10px;
+        margin-top: 4px;
+    }
+    
+    .market-news-section {
+        padding: 80px 0;
+    }
+    
+    .news-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        transition: transform 0.3s;
+    }
+    
+    .news-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .news-img {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+    }
+    
+    .news-body {
+        padding: 20px;
+    }
+    
+    .news-date {
+        font-size: 0.8rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+    
+    .news-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .news-source {
+        font-size: 0.8rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+    
+    .forecast-section {
+        padding: 80px 0;
+        background-color: #f8f9fa;
+    }
+    
+    .season-tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+        border: none;
+    }
+    
+    .season-tab {
+        padding: 10px 20px;
+        background-color: white;
+        border: 1px solid #dee2e6;
+        border-radius: 30px;
+        margin: 0 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .season-tab.active {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+    
+    .season-tab:hover:not(.active) {
+        background-color: #e9ecef;
+    }
+    
+    .seasonal-chart-container {
+        height: 400px;
+        margin-bottom: 30px;
+    }
+    
+    .seasonal-insights {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+</style>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="market-hero">
+    <div class="container">
+        <h1 class="display-4 mb-3" data-aos="fade-up">Market Trends</h1>
+        <p class="lead" data-aos="fade-up" data-aos-delay="100">Stay informed with real-time agricultural market data and insights</p>
+    </div>
+</section>
+
+<!-- Current Prices Section -->
+<section class="market-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Current Market Prices</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Latest prices for major agricultural commodities</p>
+        </div>
+        
+        <div class="market-filter" data-aos="fade-up">
+            <div class="filter-group">
+                <select class="form-select" id="category-filter">
+                    <option value="all">All Categories</option>
+                    <option value="grains">Grains</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="pulses">Pulses</option>
+                    <option value="oilseeds">Oilseeds</option>
+                </select>
+                <select class="form-select" id="state-filter">
+                    <option value="all">All States</option>
+                    <option value="punjab">Punjab</option>
+                    <option value="haryana">Haryana</option>
+                    <option value="uttar-pradesh">Uttar Pradesh</option>
+                    <option value="madhya-pradesh">Madhya Pradesh</option>
+                    <option value="maharashtra">Maharashtra</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <button class="btn btn-outline-success" id="refresh-prices">
+                    <i data-feather="refresh-cw" class="feather-small me-1"></i> Refresh Prices
+                </button>
+                <button class="btn btn-success" id="download-data">
+                    <i data-feather="download" class="feather-small me-1"></i> Download Data
+                </button>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8" data-aos="fade-up">
+                <div class="market-card mb-4">
+                    <h4 class="mb-4">Price Trends (Last 30 Days)</h4>
+                    <div class="price-chart-container">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                    <div class="d-flex justify-content-center flex-wrap gap-3">
+                        <span class="badge bg-primary crop-badge" data-crop="rice">Rice</span>
+                        <span class="badge bg-success crop-badge" data-crop="wheat">Wheat</span>
+                        <span class="badge bg-info crop-badge" data-crop="maize">Maize</span>
+                        <span class="badge bg-warning crop-badge" data-crop="potato">Potato</span>
+                        <span class="badge bg-danger crop-badge" data-crop="onion">Onion</span>
+                    </div>
+                </div>
+                
+                <div class="market-card" data-aos="fade-up">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Commodity Prices</h4>
+                        <small class="text-muted">Last updated: April 12, 2025, 09:30 AM</small>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="market-table">
+                            <thead>
+                                <tr>
+                                    <th>Commodity</th>
+                                    <th>Market</th>
+                                    <th>State</th>
+                                    <th>Price (₹/quintal)</th>
+                                    <th>Change (24h)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="price-table-body">
+                                <tr>
+                                    <td>Rice (Basmati)</td>
+                                    <td>Karnal</td>
+                                    <td>Haryana</td>
+                                    <td>₹3,240</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="arrow-up" class="feather-small"></i> 2.5%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Wheat (Sharbati)</td>
+                                    <td>Indore</td>
+                                    <td>Madhya Pradesh</td>
+                                    <td>₹2,100</td>
+                                    <td>
+                                        <span class="price-change-badge down">
+                                            <i data-feather="arrow-down" class="feather-small"></i> 1.2%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Maize</td>
+                                    <td>Davangere</td>
+                                    <td>Karnataka</td>
+                                    <td>₹1,850</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="arrow-up" class="feather-small"></i> 0.8%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Soybean</td>
+                                    <td>Ujjain</td>
+                                    <td>Madhya Pradesh</td>
+                                    <td>₹3,600</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="arrow-up" class="feather-small"></i> 3.2%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Cotton</td>
+                                    <td>Ahmedabad</td>
+                                    <td>Gujarat</td>
+                                    <td>₹6,500</td>
+                                    <td>
+                                        <span class="price-change-badge down">
+                                            <i data-feather="arrow-down" class="feather-small"></i> 0.5%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Potato</td>
+                                    <td>Agra</td>
+                                    <td>Uttar Pradesh</td>
+                                    <td>₹1,200</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="arrow-up" class="feather-small"></i> 4.2%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Onion</td>
+                                    <td>Lasalgaon</td>
+                                    <td>Maharashtra</td>
+                                    <td>₹1,800</td>
+                                    <td>
+                                        <span class="price-change-badge down">
+                                            <i data-feather="arrow-down" class="feather-small"></i> 2.3%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Tomato</td>
+                                    <td>Kolar</td>
+                                    <td>Karnataka</td>
+                                    <td>₹2,200</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="arrow-up" class="feather-small"></i> 6.8%
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="market-card mb-4">
+                    <h4 class="mb-3">Price Alerts</h4>
+                    <p class="text-muted mb-4">Set alerts for price changes in your preferred commodities</p>
+                    
+                    <form id="alert-form">
+                        <div class="mb-3">
+                            <label for="alert-commodity" class="form-label">Commodity</label>
+                            <select class="form-select" id="alert-commodity" required>
+                                <option value="" selected disabled>Select a commodity</option>
+                                <option value="rice">Rice</option>
+                                <option value="wheat">Wheat</option>
+                                <option value="maize">Maize</option>
+                                <option value="soybean">Soybean</option>
+                                <option value="cotton">Cotton</option>
+                                <option value="potato">Potato</option>
+                                <option value="onion">Onion</option>
+                                <option value="tomato">Tomato</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="alert-type" class="form-label">Alert Type</label>
+                            <select class="form-select" id="alert-type" required>
+                                <option value="price-above">Price Above</option>
+                                <option value="price-below">Price Below</option>
+                                <option value="price-change">Price Change %</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="alert-value" class="form-label">Value</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="alert-value-prefix">₹</span>
+                                <input type="number" class="form-control" id="alert-value" placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">
+                                <i data-feather="bell" class="feather-small me-1"></i> Set Alert
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="market-card" data-aos="fade-up" data-aos-delay="300">
+                    <h4 class="mb-3">Market Insights</h4>
+                    
+                    <div class="info-box">
+                        <h5><i data-feather="trending-up" class="text-success"></i> Top Gainers</h5>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Tomato</span>
+                                <span class="trend-up">+6.8%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 68%;" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Potato</span>
+                                <span class="trend-up">+4.2%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 42%;" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Soybean</span>
+                                <span class="trend-up">+3.2%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 32%;" aria-valuenow="32" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-box">
+                        <h5><i data-feather="trending-down" class="text-danger"></i> Top Losers</h5>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Onion</span>
+                                <span class="trend-down">-2.3%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 23%;" aria-valuenow="23" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Wheat</span>
+                                <span class="trend-down">-1.2%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 12%;" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Cotton</span>
+                                <span class="trend-down">-0.5%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 5%;" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Price Insights Section -->
+<section class="insights-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Market Insights</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Actionable information to help make informed decisions</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="insight-card h-100">
+                    <div class="insight-header">
+                        <h4><i data-feather="trending-up" class="me-2"></i> Supply & Demand</h4>
+                    </div>
+                    <div class="insight-body">
+                        <ul class="insight-list">
+                            <li>
+                                <i data-feather="alert-circle" class="text-danger"></i>
+                                <div>
+                                    <strong>Onion supply shortage</strong> expected in the next 2 weeks due to reduced production in Maharashtra.
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="check-circle" class="text-success"></i>
+                                <div>
+                                    <strong>Record wheat production</strong> in Punjab and Haryana may lead to price stabilization in May.
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="trending-up" class="text-info"></i>
+                                <div>
+                                    <strong>Growing export demand</strong> for Basmati rice and premium fruits to Middle Eastern countries.
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="alert-triangle" class="text-warning"></i>
+                                <div>
+                                    <strong>Potential supply chain disruptions</strong> for perishables due to predicted heavy rainfall in southern states.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="insight-card h-100">
+                    <div class="insight-header">
+                        <h4><i data-feather="dollar-sign" class="me-2"></i> Price Predictions</h4>
+                    </div>
+                    <div class="insight-body">
+                        <ul class="insight-list">
+                            <li>
+                                <i data-feather="arrow-up" class="text-danger"></i>
+                                <div>
+                                    <strong>Tomato prices expected to rise</strong> by 8-10% in the next two weeks due to increased demand and reduced supply.
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="arrow-down" class="text-success"></i>
+                                <div>
+                                    <strong>Potato prices likely to decrease</strong> by 3-5% in northern markets as new harvest reaches markets.
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="minus" class="text-info"></i>
+                                <div>
+                                    <strong>Rice prices predicted to remain stable</strong> over the next month due to balanced supply and demand.
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="arrow-up" class="text-warning"></i>
+                                <div>
+                                    <strong>Oilseed prices may increase</strong> due to global supply constraints and rising international prices.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="insight-card h-100">
+                    <div class="insight-header">
+                        <h4><i data-feather="briefcase" class="me-2"></i> Market Opportunities</h4>
+                    </div>
+                    <div class="insight-body">
+                        <ul class="insight-list">
+                            <li>
+                                <i data-feather="star" class="text-warning"></i>
+                                <div>
+                                    <strong>Organic produce demand</strong> growing at 25% annually in urban markets, especially for leafy vegetables and fruits.
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="star" class="text-warning"></i>
+                                <div>
+                                    <strong>Export opportunities</strong> for soybean and maize to Southeast Asian countries with favorable price trends.
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="star" class="text-warning"></i>
+                                <div>
+                                    <strong>Growing market for exotic vegetables</strong> in metropolitan cities with 30-40% higher profit margins.
+                                </div>
+                            </li>
+                            <li>
+                                <i data-feather="star" class="text-warning"></i>
+                                <div>
+                                    <strong>Rising demand for direct-to-consumer</strong> farm-fresh deliveries in mid-sized cities.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Agricultural News Section -->
+<section class="market-news-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Agricultural News</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Latest updates and developments in the agricultural sector</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="news-card">
+                    <img src="https://images.unsplash.com/photo-1560493676-04071c5f467b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80" alt="Government Policy" class="news-img">
+                    <div class="news-body">
+                        <div class="news-date">
+                            <i data-feather="calendar" class="feather-small"></i> April 10, 2025
+                        </div>
+                        <h5 class="news-title">Government Announces New MSP for Kharif Crops</h5>
+                        <p>The Union Cabinet has approved an increase in the Minimum Support Price (MSP) for Kharif crops for the 2025-26 marketing season, with a significant rise for pulses and oilseeds.</p>
+                        <div class="news-source">
+                            <span>Source: Ministry of Agriculture</span>
+                            <a href="#" class="btn btn-sm btn-outline-success">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="news-card">
+                    <img src="https://images.unsplash.com/photo-1621928372414-30e144d51d49?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80" alt="Weather Impact" class="news-img">
+                    <div class="news-body">
+                        <div class="news-date">
+                            <i data-feather="calendar" class="feather-small"></i> April 8, 2025
+                        </div>
+                        <h5 class="news-title">IMD Predicts Normal Monsoon for 2025</h5>
+                        <p>The India Meteorological Department (IMD) has predicted a normal monsoon for 2025, with rainfall likely to be 101% of the long-period average, bringing relief to farmers.</p>
+                        <div class="news-source">
+                            <span>Source: IMD</span>
+                            <a href="#" class="btn btn-sm btn-outline-success">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="news-card">
+                    <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80" alt="Technology" class="news-img">
+                    <div class="news-body">
+                        <div class="news-date">
+                            <i data-feather="calendar" class="feather-small"></i> April 6, 2025
+                        </div>
+                        <h5 class="news-title">Agricultural Drones to Be Subsidized Under New Scheme</h5>
+                        <p>The government has announced a new scheme to provide a 50% subsidy on agricultural drones to promote precision farming and reduce input costs for farmers.</p>
+                        <div class="news-source">
+                            <span>Source: Ministry of Agriculture</span>
+                            <a href="#" class="btn btn-sm btn-outline-success">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-outline-success">
+                <i data-feather="plus" class="feather-small me-1"></i> Load More News
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Seasonal Price Forecast Section -->
+<section class="forecast-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Seasonal Price Forecast</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Anticipate price trends based on historical data and seasonal patterns</p>
+        </div>
+        
+        <div class="season-tabs" data-aos="fade-up">
+            <div class="season-tab active" data-season="summer">Summer (Apr-Jun)</div>
+            <div class="season-tab" data-season="monsoon">Monsoon (Jul-Sep)</div>
+            <div class="season-tab" data-season="winter">Winter (Oct-Dec)</div>
+            <div class="season-tab" data-season="spring">Spring (Jan-Mar)</div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8" data-aos="fade-up">
+                <div class="seasonal-chart-container">
+                    <canvas id="seasonalChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="seasonal-insights">
+                    <h4 class="mb-4">Summer Price Insights</h4>
+                    <p>Historically, summer months show specific price patterns for various crops:</p>
+                    <ul>
+                        <li><strong>Vegetables:</strong> Prices tend to increase due to water scarcity and higher temperatures affecting yield.</li>
+                        <li><strong>Fruits:</strong> Summer fruits like mangoes and watermelons see lower prices due to abundant supply.</li>
+                        <li><strong>Grains:</strong> Relatively stable prices with slight increase towards the end of the season as stocks reduce.</li>
+                    </ul>
+                    <p>Recommendations:</p>
+                    <ul>
+                        <li>Consider early sowing of vegetables to capture premium prices</li>
+                        <li>Focus on quality and grading for fruits to maximize returns</li>
+                        <li>Plan storage for grains to sell during price peaks</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Export Markets Section -->
+<section class="market-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Export Market Opportunities</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Explore global markets for your agricultural produce</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4" data-aos="fade-up">
+                <div class="market-card">
+                    <h4 class="mb-4">Top Export Destinations</h4>
+                    <div class="price-chart-container">
+                        <canvas id="exportChart"></canvas>
+                    </div>
+                    <p class="text-center mt-3">Major export destinations for Indian agricultural products</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="market-card">
+                    <h4 class="mb-4">High-Value Export Crops</h4>
+                    <div class="table-responsive">
+                        <table class="market-table">
+                            <thead>
+                                <tr>
+                                    <th>Crop</th>
+                                    <th>Main Markets</th>
+                                    <th>Price Premium (%)</th>
+                                    <th>Growth Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Basmati Rice</td>
+                                    <td>Middle East, EU, USA</td>
+                                    <td>35-45%</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="trending-up" class="feather-small"></i> High
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Organic Spices</td>
+                                    <td>USA, Germany, Japan</td>
+                                    <td>50-70%</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="trending-up" class="feather-small"></i> Very High
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Mangoes (Alphonso)</td>
+                                    <td>UAE, UK, Singapore</td>
+                                    <td>40-60%</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="trending-up" class="feather-small"></i> Medium
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Buffalo Meat</td>
+                                    <td>Vietnam, Malaysia, Egypt</td>
+                                    <td>20-30%</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="trending-up" class="feather-small"></i> Medium
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Sesame Seeds</td>
+                                    <td>South Korea, Japan, USA</td>
+                                    <td>25-35%</td>
+                                    <td>
+                                        <span class="price-change-badge up">
+                                            <i data-feather="trending-up" class="feather-small"></i> High
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <a href="#" class="btn btn-outline-success btn-sm">
+                            <i data-feather="download" class="feather-small me-1"></i> Export Opportunity Report
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 mb-4 mb-lg-0" data-aos="fade-right">
+                <h2>Stay Updated with Market Trends</h2>
+                <p class="lead">Subscribe to our weekly newsletter for comprehensive market analysis, price forecasts, and expert insights.</p>
+            </div>
+            <div class="col-lg-5" data-aos="fade-left">
+                <div class="input-group">
+                    <input type="email" class="form-control" placeholder="Enter your email" aria-label="Enter your email" aria-describedby="subscribe-btn">
+                    <button class="btn btn-light" type="button" id="subscribe-btn">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Feather icons
+        feather.replace();
+        
+        // Initialize price chart
+        const priceCtx = document.getElementById('priceChart').getContext('2d');
+        const priceChart = new Chart(priceCtx, {
+            type: 'line',
+            data: {
+                labels: generateDateLabels(30),
+                datasets: [
+                    {
+                        label: 'Rice',
+                        data: generatePriceData(3200, 3250, 30),
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    },
+                    {
+                        label: 'Wheat',
+                        data: generatePriceData(2150, 2100, 30),
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    },
+                    {
+                        label: 'Maize',
+                        data: generatePriceData(1800, 1850, 30),
+                        borderColor: '#0dcaf0',
+                        backgroundColor: 'rgba(13, 202, 240, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    },
+                    {
+                        label: 'Potato',
+                        data: generatePriceData(1100, 1200, 30),
+                        borderColor: '#ffc107',
+                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    },
+                    {
+                        label: 'Onion',
+                        data: generatePriceData(1900, 1800, 30),
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ₹' + context.raw;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Initialize seasonal chart
+        const seasonalCtx = document.getElementById('seasonalChart').getContext('2d');
+        const seasonalChart = new Chart(seasonalCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Vegetables', 'Fruits', 'Grains', 'Pulses', 'Oilseeds'],
+                datasets: [
+                    {
+                        label: 'Current Price',
+                        data: [2200, 1800, 2100, 3500, 4200],
+                        backgroundColor: 'rgba(25, 135, 84, 0.7)',
+                        borderColor: 'rgba(25, 135, 84, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Projected Price (End of Season)',
+                        data: [2500, 1600, 2300, 3800, 4500],
+                        backgroundColor: 'rgba(13, 110, 253, 0.7)',
+                        borderColor: 'rgba(13, 110, 253, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ₹' + context.raw + '/quintal';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Initialize export chart
+        const exportCtx = document.getElementById('exportChart').getContext('2d');
+        const exportChart = new Chart(exportCtx, {
+            type: 'polarArea',
+            data: {
+                labels: ['USA', 'UAE', 'China', 'Bangladesh', 'Saudi Arabia', 'Iran', 'Others'],
+                datasets: [{
+                    data: [22, 18, 15, 12, 10, 8, 15],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)',
+                        'rgba(199, 199, 199, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Crop badge click handlers
+        document.querySelectorAll('.crop-badge').forEach(badge => {
+            badge.addEventListener('click', function() {
+                const crop = this.getAttribute('data-crop');
+                
+                // Toggle visibility of corresponding dataset
+                const datasetIndex = {
+                    'rice': 0,
+                    'wheat': 1,
+                    'maize': 2,
+                    'potato': 3,
+                    'onion': 4
+                }[crop];
+                
+                const isHidden = priceChart.isDatasetHidden(datasetIndex);
+                priceChart.setDatasetVisibility(datasetIndex, isHidden);
+                priceChart.update();
+                
+                // Toggle active state of badge
+                this.classList.toggle('bg-secondary');
+                if (!isHidden) {
+                    this.classList.remove('bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger');
+                } else {
+                    const bgClass = {
+                        'rice': 'bg-primary',
+                        'wheat': 'bg-success',
+                        'maize': 'bg-info',
+                        'potato': 'bg-warning',
+                        'onion': 'bg-danger'
+                    }[crop];
+                    this.classList.add(bgClass);
+                }
+            });
+        });
+        
+        // Season tab click handlers
+        document.querySelectorAll('.season-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Update active tab
+                document.querySelectorAll('.season-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const season = this.getAttribute('data-season');
+                
+                // Update chart data based on selected season
+                updateSeasonalChart(seasonalChart, season);
+            });
+        });
+        
+        // Price alert form
+        const alertForm = document.getElementById('alert-form');
+        const alertType = document.getElementById('alert-type');
+        const alertValuePrefix = document.getElementById('alert-value-prefix');
+        
+        alertType.addEventListener('change', function() {
+            // Update input prefix based on alert type
+            if (this.value === 'price-change') {
+                alertValuePrefix.textContent = '%';
+            } else {
+                alertValuePrefix.textContent = '₹';
+            }
+        });
+        
+        if (alertForm) {
+            alertForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show success message
+                alert('Price alert has been set successfully!');
+                
+                // Reset form
+                alertForm.reset();
+            });
+        }
+        
+        // Refresh prices button
+        const refreshPricesBtn = document.getElementById('refresh-prices');
+        if (refreshPricesBtn) {
+            refreshPricesBtn.addEventListener('click', function() {
+                // Simulate refreshing prices
+                this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Refreshing...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i data-feather="refresh-cw" class="feather-small me-2"></i> Refresh Prices';
+                    this.disabled = false;
+                    feather.replace();
+                    
+                    // Show toast notification
+                    alert('Prices updated to latest rates!');
+                }, 1500);
+            });
+        }
+        
+        // Download data button
+        const downloadDataBtn = document.getElementById('download-data');
+        if (downloadDataBtn) {
+            downloadDataBtn.addEventListener('click', function() {
+                // Simulate downloading data
+                alert('Market data has been downloaded as CSV file.');
+            });
+        }
+        
+        // Newsletter subscription
+        const subscribeBtn = document.getElementById('subscribe-btn');
+        if (subscribeBtn) {
+            subscribeBtn.addEventListener('click', function() {
+                const emailInput = this.previousElementSibling;
+                if (emailInput.value) {
+                    alert('Thank you for subscribing to our market trends newsletter!');
+                    emailInput.value = '';
+                } else {
+                    alert('Please enter a valid email address.');
+                }
+            });
+        }
+        
+        // Helper function to generate price data
+        function generatePriceData(startPrice, endPrice, days) {
+            const data = [];
+            const priceDiff = endPrice - startPrice;
+            const dailyChange = priceDiff / days;
+            
+            let currentPrice = startPrice;
+            for (let i = 0; i < days; i++) {
+                // Add some randomness to the price
+                const randomFactor = Math.random() * 50 - 25;
+                currentPrice = currentPrice + dailyChange + randomFactor;
+                
+                // Ensure price doesn't go below a certain threshold
+                currentPrice = Math.max(currentPrice, startPrice * 0.8);
+                
+                data.push(Math.round(currentPrice));
+            }
+            
+            return data;
+        }
+        
+        // Helper function to generate date labels
+        function generateDateLabels(days) {
+            const labels = [];
+            const today = new Date();
+            
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(today.getDate() - i);
+                
+                const day = date.getDate();
+                const month = date.toLocaleString('default', { month: 'short' });
+                
+                labels.push(`${day} ${month}`);
+            }
+            
+            return labels;
+        }
+        
+        // Function to update seasonal chart based on selected season
+        function updateSeasonalChart(chart, season) {
+            let currentPrices, projectedPrices;
+            
+            switch (season) {
+                case 'summer':
+                    currentPrices = [2200, 1800, 2100, 3500, 4200];
+                    projectedPrices = [2500, 1600, 2300, 3800, 4500];
+                    break;
+                case 'monsoon':
+                    currentPrices = [1800, 2200, 2400, 3400, 4400];
+                    projectedPrices = [1600, 2400, 2600, 3200, 4600];
+                    break;
+                case 'winter':
+                    currentPrices = [1600, 2500, 2300, 3100, 4500];
+                    projectedPrices = [1900, 2300, 2200, 3400, 4300];
+                    break;
+                case 'spring':
+                    currentPrices = [1900, 2100, 2000, 3200, 4100];
+                    projectedPrices = [2200, 1900, 2100, 3600, 4300];
+                    break;
+            }
+            
+            chart.data.datasets[0].data = currentPrices;
+            chart.data.datasets[1].data = projectedPrices;
+            chart.update();
+            
+            // Update seasonal insights content based on selected season
+            const seasonalInsights = document.querySelector('.seasonal-insights');
+            let insightsContent = '';
+            
+            switch (season) {
+                case 'summer':
+                    insightsContent = `
+                        <h4 class="mb-4">Summer Price Insights</h4>
+                        <p>Historically, summer months show specific price patterns for various crops:</p>
+                        <ul>
+                            <li><strong>Vegetables:</strong> Prices tend to increase due to water scarcity and higher temperatures affecting yield.</li>
+                            <li><strong>Fruits:</strong> Summer fruits like mangoes and watermelons see lower prices due to abundant supply.</li>
+                            <li><strong>Grains:</strong> Relatively stable prices with slight increase towards the end of the season as stocks reduce.</li>
+                        </ul>
+                        <p>Recommendations:</p>
+                        <ul>
+                            <li>Consider early sowing of vegetables to capture premium prices</li>
+                            <li>Focus on quality and grading for fruits to maximize returns</li>
+                            <li>Plan storage for grains to sell during price peaks</li>
+                        </ul>
+                    `;
+                    break;
+                case 'monsoon':
+                    insightsContent = `
+                        <h4 class="mb-4">Monsoon Price Insights</h4>
+                        <p>Monsoon season typically affects agricultural prices in the following ways:</p>
+                        <ul>
+                            <li><strong>Vegetables:</strong> Prices generally decrease due to increased production from rainfall.</li>
+                            <li><strong>Fruits:</strong> Seasonal fruits like apples and pears enter the market, increasing overall fruit prices.</li>
+                            <li><strong>Grains:</strong> Prices tend to rise as old stocks deplete before new harvest.</li>
+                        </ul>
+                        <p>Recommendations:</p>
+                        <ul>
+                            <li>Focus on water management and drainage systems</li>
+                            <li>Consider protective cultivation for high-value vegetables</li>
+                            <li>Plan for pest management due to increased humidity</li>
+                        </ul>
+                    `;
+                    break;
+                case 'winter':
+                    insightsContent = `
+                        <h4 class="mb-4">Winter Price Insights</h4>
+                        <p>Winter season price patterns show these characteristics:</p>
+                        <ul>
+                            <li><strong>Vegetables:</strong> Premium winter vegetables command higher prices in the market.</li>
+                            <li><strong>Fruits:</strong> Citrus fruits and other winter varieties see peak prices.</li>
+                            <li><strong>Grains:</strong> Fresh harvest tends to stabilize or slightly decrease prices.</li>
+                        </ul>
+                        <p>Recommendations:</p>
+                        <ul>
+                            <li>Focus on winter-specific crops like peas, cauliflower, and carrots</li>
+                            <li>Consider greenhouse cultivation for off-season vegetables</li>
+                            <li>Plan marketing strategies for post-harvest grains</li>
+                        </ul>
+                    `;
+                    break;
+                case 'spring':
+                    insightsContent = `
+                        <h4 class="mb-4">Spring Price Insights</h4>
+                        <p>Spring season influences agricultural markets in these ways:</p>
+                        <ul>
+                            <li><strong>Vegetables:</strong> Early spring vegetables attract premium prices before summer glut.</li>
+                            <li><strong>Fruits:</strong> Transitional period with moderate prices as winter fruits decline.</li>
+                            <li><strong>Grains:</strong> Prices typically rise as winter stocks decrease before summer harvest.</li>
+                        </ul>
+                        <p>Recommendations:</p>
+                        <ul>
+                            <li>Focus on early maturing varieties of summer crops</li>
+                            <li>Plan irrigation strategies for pre-monsoon dry period</li>
+                            <li>Consider staggered planting for continuous market supply</li>
+                        </ul>
+                    `;
+                    break;
+            }
+            
+            seasonalInsights.innerHTML = insightsContent;
+        }
+    });
+</script>
+{% endblock %}

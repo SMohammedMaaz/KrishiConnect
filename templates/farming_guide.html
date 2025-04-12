@@ -1,0 +1,1310 @@
+{% extends 'base.html' %}
+
+{% block title %}Farming Guide - KrishiConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .guide-hero {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.9) 0%, rgba(32, 134, 55, 0.95) 100%), url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 100px 0;
+        text-align: center;
+    }
+    
+    .guide-section {
+        padding: 80px 0;
+    }
+    
+    .guide-card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        transition: all 0.3s;
+    }
+    
+    .guide-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .guide-card-img {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .guide-card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        padding: 20px;
+        color: white;
+    }
+    
+    .accordion-item {
+        border: none;
+        background-color: transparent;
+        margin-bottom: 15px;
+    }
+    
+    .accordion-button {
+        background-color: white;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        font-weight: 500;
+    }
+    
+    .accordion-button:not(.collapsed) {
+        color: var(--primary-color);
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .accordion-button:focus {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-color: #e9ecef;
+    }
+    
+    .accordion-body {
+        background-color: white;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+    }
+    
+    .crop-calendar {
+        background-color: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .calendar-month {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    .calendar-month-name {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 5px;
+        border-radius: 5px 5px 0 0;
+        font-weight: 600;
+    }
+    
+    .calendar-crops {
+        background-color: #f8f9fa;
+        padding: 10px 5px;
+        border-radius: 0 0 5px 5px;
+        height: 80px;
+        overflow-y: auto;
+        font-size: 0.85rem;
+    }
+    
+    .calendar-crops p {
+        margin-bottom: 5px;
+    }
+    
+    .calendar-legend {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.85rem;
+    }
+    
+    .legend-color {
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+        margin-right: 5px;
+    }
+    
+    .pest-disease-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .pest-disease-table th {
+        background-color: #28a745;
+        color: white;
+        padding: 15px;
+        text-align: left;
+    }
+    
+    .pest-disease-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f1f3f5;
+        background-color: white;
+    }
+    
+    .pest-disease-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .pest-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 5px;
+        object-fit: cover;
+    }
+    
+    .organic-method {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+        border-radius: 5px;
+        padding: 3px 8px;
+        font-size: 0.8rem;
+        display: inline-block;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+    
+    .chemical-method {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+        border-radius: 5px;
+        padding: 3px 8px;
+        font-size: 0.8rem;
+        display: inline-block;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+    
+    .video-container {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+    
+    .resource-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        transition: all 0.3s;
+    }
+    
+    .resource-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .resource-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgba(40, 167, 69, 0.1);
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    
+    .technology-section {
+        background-color: #f8f9fa;
+        padding: 80px 0;
+    }
+    
+    .technology-card {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        transition: all 0.3s;
+    }
+    
+    .technology-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .technology-icon {
+        width: 60px;
+        height: 60px;
+        background-color: rgba(40, 167, 69, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: var(--primary-color);
+    }
+    
+    .soil-health-section {
+        padding: 80px 0;
+    }
+    
+    .soil-health-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .soil-health-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .soil-health-body {
+        background-color: white;
+        padding: 25px;
+    }
+    
+    .nutrient-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .nutrient-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: white;
+        font-weight: 600;
+    }
+    
+    .nutrient-text {
+        flex-grow: 1;
+    }
+    
+    .nutrient-icon.n {
+        background-color: #4CAF50;
+    }
+    
+    .nutrient-icon.p {
+        background-color: #2196F3;
+    }
+    
+    .nutrient-icon.k {
+        background-color: #FF9800;
+    }
+    
+    .nutrient-icon.ph {
+        background-color: #9C27B0;
+    }
+    
+    .nutrient-icon.organic {
+        background-color: #795548;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="guide-hero">
+    <div class="container">
+        <h1 class="display-4 mb-3" data-aos="fade-up">Farming Guide</h1>
+        <p class="lead" data-aos="fade-up" data-aos-delay="100">Expert agricultural knowledge for better yields and sustainable farming</p>
+    </div>
+</section>
+
+<!-- Main Guides Section -->
+<section class="guide-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Popular Farming Guides</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Explore our comprehensive guides for various crops and farming techniques</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card guide-card">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1595329088732-2dd10f3a8f1f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80" class="card-img-top guide-card-img" alt="Rice Farming">
+                        <div class="guide-card-overlay">
+                            <h5>Rice Farming</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Learn modern techniques for rice cultivation, water management, and maximizing yields.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#riceFarmingModal">
+                                <i data-feather="book-open" class="feather-small me-1"></i> Read Guide
+                            </button>
+                            <span class="badge bg-light text-dark">15 min read</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card guide-card">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1505471768190-275e2ad7b3f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1942&q=80" class="card-img-top guide-card-img" alt="Wheat Farming">
+                        <div class="guide-card-overlay">
+                            <h5>Wheat Farming</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Comprehensive guide on wheat varieties, soil preparation, and harvest management.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#wheatFarmingModal">
+                                <i data-feather="book-open" class="feather-small me-1"></i> Read Guide
+                            </button>
+                            <span class="badge bg-light text-dark">12 min read</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card guide-card">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1626029322280-f237205611d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80" class="card-img-top guide-card-img" alt="Tomato Farming">
+                        <div class="guide-card-overlay">
+                            <h5>Tomato Farming</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Expert tips on growing tomatoes, pest management, and increasing fruit quality.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#tomatoFarmingModal">
+                                <i data-feather="book-open" class="feather-small me-1"></i> Read Guide
+                            </button>
+                            <span class="badge bg-light text-dark">10 min read</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="card guide-card">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1520136996273-0a2826b0ca65?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1972&q=80" class="card-img-top guide-card-img" alt="Organic Farming">
+                        <div class="guide-card-overlay">
+                            <h5>Organic Farming</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Transition to organic farming with techniques for natural pest control and soil health.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#organicFarmingModal">
+                                <i data-feather="book-open" class="feather-small me-1"></i> Read Guide
+                            </button>
+                            <span class="badge bg-light text-dark">18 min read</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="card guide-card">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1585181133676-f3757e34a8ad?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80" class="card-img-top guide-card-img" alt="Drip Irrigation">
+                        <div class="guide-card-overlay">
+                            <h5>Drip Irrigation</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Set up efficient drip irrigation systems to save water and improve crop yields.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#dripIrrigationModal">
+                                <i data-feather="book-open" class="feather-small me-1"></i> Read Guide
+                            </button>
+                            <span class="badge bg-light text-dark">8 min read</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="600">
+                <div class="card guide-card">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1631706334610-8010d09f6bf2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" class="card-img-top guide-card-img" alt="Crop Rotation">
+                        <div class="guide-card-overlay">
+                            <h5>Crop Rotation</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Implement strategic crop rotation to improve soil fertility and reduce pest problems.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#cropRotationModal">
+                                <i data-feather="book-open" class="feather-small me-1"></i> Read Guide
+                            </button>
+                            <span class="badge bg-light text-dark">9 min read</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Planting Calendar Section -->
+<section class="guide-section bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Crop Planting Calendar</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Optimal planting times for major crops in different regions of India</p>
+        </div>
+        
+        <div class="crop-calendar" data-aos="fade-up">
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="d-flex mb-2 align-items-center">
+                        <select class="form-select me-2" id="region-select">
+                            <option value="north">North India</option>
+                            <option value="south">South India</option>
+                            <option value="east">East India</option>
+                            <option value="west">West India</option>
+                            <option value="central">Central India</option>
+                        </select>
+                        <button class="btn btn-sm btn-success" id="update-calendar">
+                            <i data-feather="refresh-cw" class="feather-small"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #28a745;"></div>
+                            <span>Grains</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #ffc107;"></div>
+                            <span>Vegetables</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #17a2b8;"></div>
+                            <span>Fruits</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #6610f2;"></div>
+                            <span>Pulses</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #fd7e14;"></div>
+                            <span>Oilseeds</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row" id="calendar-months">
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">January</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #28a745;">●</span> Wheat (Late)</p>
+                            <p><span style="color: #ffc107;">●</span> Peas, Carrots</p>
+                            <p><span style="color: #6610f2;">●</span> Bengal Gram</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">February</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #28a745;">●</span> Barley</p>
+                            <p><span style="color: #ffc107;">●</span> Tomatoes, Brinjal</p>
+                            <p><span style="color: #fd7e14;">●</span> Mustard</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">March</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #ffc107;">●</span> Okra, Cucumbers</p>
+                            <p><span style="color: #17a2b8;">●</span> Watermelon</p>
+                            <p><span style="color: #6610f2;">●</span> Moong Dal</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">April</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #17a2b8;">●</span> Muskmelon</p>
+                            <p><span style="color: #ffc107;">●</span> Bitter Gourd</p>
+                            <p><span style="color: #fd7e14;">●</span> Sunflower</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">May</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #28a745;">●</span> Maize</p>
+                            <p><span style="color: #ffc107;">●</span> Pumpkin, Gourds</p>
+                            <p><span style="color: #fd7e14;">●</span> Sesame</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">June</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #28a745;">●</span> Rice (Kharif)</p>
+                            <p><span style="color: #6610f2;">●</span> Black Gram</p>
+                            <p><span style="color: #fd7e14;">●</span> Groundnut</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">July</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #28a745;">●</span> Sorghum, Millet</p>
+                            <p><span style="color: #fd7e14;">●</span> Soybean</p>
+                            <p><span style="color: #6610f2;">●</span> Pigeon Pea</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">August</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #17a2b8;">●</span> Papaya</p>
+                            <p><span style="color: #ffc107;">●</span> Cauliflower</p>
+                            <p><span style="color: #fd7e14;">●</span> Castor</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">September</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #ffc107;">●</span> Cabbage, Spinach</p>
+                            <p><span style="color: #6610f2;">●</span> Moth Bean</p>
+                            <p><span style="color: #17a2b8;">●</span> Banana</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">October</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #28a745;">●</span> Wheat (Early)</p>
+                            <p><span style="color: #ffc107;">●</span> Radish, Carrot</p>
+                            <p><span style="color: #fd7e14;">●</span> Linseed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">November</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #28a745;">●</span> Wheat (Main)</p>
+                            <p><span style="color: #ffc107;">●</span> Onion, Garlic</p>
+                            <p><span style="color: #6610f2;">●</span> Chickpea</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="calendar-month">
+                        <div class="calendar-month-name">December</div>
+                        <div class="calendar-crops">
+                            <p><span style="color: #ffc107;">●</span> Potato, Peas</p>
+                            <p><span style="color: #28a745;">●</span> Barley</p>
+                            <p><span style="color: #fd7e14;">●</span> Rapeseed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pest and Disease Management Section -->
+<section class="guide-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Pest & Disease Management</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Identify common agricultural pests and diseases and learn how to manage them</p>
+        </div>
+        
+        <div class="table-responsive" data-aos="fade-up">
+            <table class="pest-disease-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Pest/Disease</th>
+                        <th>Affected Crops</th>
+                        <th>Symptoms</th>
+                        <th>Treatment Methods</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img src="https://images.unsplash.com/photo-1628005908592-e6204a6df0ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80" alt="Aphids" class="pest-image">
+                        </td>
+                        <td>Aphids</td>
+                        <td>Vegetables, fruits, cereals</td>
+                        <td>Curled leaves, stunted growth, honeydew secretion</td>
+                        <td>
+                            <span class="organic-method">Neem oil spray</span>
+                            <span class="organic-method">Ladybugs</span>
+                            <span class="chemical-method">Imidacloprid</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="https://images.unsplash.com/photo-1600696031005-7e5cea4a162c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=928&q=80" alt="Powdery Mildew" class="pest-image">
+                        </td>
+                        <td>Powdery Mildew</td>
+                        <td>Cucumber, squash, grapes</td>
+                        <td>White powdery spots on leaves and stems</td>
+                        <td>
+                            <span class="organic-method">Milk spray</span>
+                            <span class="organic-method">Potassium bicarbonate</span>
+                            <span class="chemical-method">Sulfur fungicide</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="https://plus.unsplash.com/premium_photo-1669911523220-f91f6f73159b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" alt="Leaf Rust" class="pest-image">
+                        </td>
+                        <td>Leaf Rust</td>
+                        <td>Wheat, barley, oats</td>
+                        <td>Orange-brown pustules on leaves</td>
+                        <td>
+                            <span class="organic-method">Crop rotation</span>
+                            <span class="organic-method">Resistant varieties</span>
+                            <span class="chemical-method">Triazole fungicides</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="https://images.unsplash.com/photo-1567225591450-06036b3392a6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80" alt="Bollworm" class="pest-image">
+                        </td>
+                        <td>Bollworm</td>
+                        <td>Cotton, tomato, corn</td>
+                        <td>Holes in fruits, damaged bolls and flowers</td>
+                        <td>
+                            <span class="organic-method">Bt spray</span>
+                            <span class="organic-method">Pheromone traps</span>
+                            <span class="chemical-method">Spinosad</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="https://images.unsplash.com/photo-1550948537-130a1ce83314?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1972&q=80" alt="Rice blast" class="pest-image">
+                        </td>
+                        <td>Rice Blast</td>
+                        <td>Rice</td>
+                        <td>Diamond-shaped lesions on leaves, infected panicles</td>
+                        <td>
+                            <span class="organic-method">Silicon supplements</span>
+                            <span class="organic-method">Resistant varieties</span>
+                            <span class="chemical-method">Tricyclazole</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-outline-success">
+                <i data-feather="download" class="feather-small me-1"></i> Download Complete Pest & Disease Guide
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Sustainable Farming Section -->
+<section class="guide-section bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Sustainable Farming Practices</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Implement these practices for long-term agricultural sustainability</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="video-container mb-4">
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/ycaGPUQvAs4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="accordion" id="sustainableAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <i data-feather="droplet" class="feather-small me-2 text-primary"></i> Water Conservation
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#sustainableAccordion">
+                            <div class="accordion-body">
+                                <p>Water is a precious resource in agriculture. Implement these practices to conserve water:</p>
+                                <ul>
+                                    <li>Install drip irrigation systems to deliver water directly to plant roots</li>
+                                    <li>Use mulching to reduce evaporation from soil</li>
+                                    <li>Collect rainwater for irrigation during dry periods</li>
+                                    <li>Schedule irrigation based on soil moisture levels rather than fixed schedules</li>
+                                    <li>Plant drought-resistant crop varieties in water-scarce regions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <i data-feather="refresh-cw" class="feather-small me-2 text-success"></i> Soil Health Management
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#sustainableAccordion">
+                            <div class="accordion-body">
+                                <p>Maintaining soil health is fundamental to sustainable farming:</p>
+                                <ul>
+                                    <li>Practice crop rotation to prevent nutrient depletion and pest buildup</li>
+                                    <li>Use cover crops to prevent soil erosion and add organic matter</li>
+                                    <li>Apply compost and organic matter to improve soil structure</li>
+                                    <li>Minimize tillage to preserve soil structure and beneficial organisms</li>
+                                    <li>Monitor and maintain soil pH for optimal nutrient availability</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <i data-feather="shield" class="feather-small me-2 text-warning"></i> Integrated Pest Management
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#sustainableAccordion">
+                            <div class="accordion-body">
+                                <p>IPM combines different strategies to control pests while minimizing environmental impact:</p>
+                                <ul>
+                                    <li>Use biological controls like beneficial insects to manage pest populations</li>
+                                    <li>Implement cultural practices such as crop rotation and sanitation</li>
+                                    <li>Select pest-resistant crop varieties when available</li>
+                                    <li>Monitor pest populations regularly to detect problems early</li>
+                                    <li>Use chemical pesticides only as a last resort and in targeted applications</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                <i data-feather="sun" class="feather-small me-2 text-danger"></i> Energy Efficiency
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#sustainableAccordion">
+                            <div class="accordion-body">
+                                <p>Reducing energy use in farming operations saves costs and reduces environmental impact:</p>
+                                <ul>
+                                    <li>Switch to energy-efficient equipment and machinery</li>
+                                    <li>Consider solar pumps for irrigation systems</li>
+                                    <li>Implement precision agriculture to optimize resource use</li>
+                                    <li>Maintain equipment regularly for optimal efficiency</li>
+                                    <li>Use windbreaks to reduce energy needs for heating and cooling in structures</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Agricultural Technology Section -->
+<section class="technology-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Modern Farming Technologies</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Embrace these technologies to increase efficiency and yields</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="technology-card text-center p-4">
+                    <div class="technology-icon">
+                        <i data-feather="map" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h4>Precision Agriculture</h4>
+                    <p class="mb-0">Use GPS, sensors, and data analytics to optimize farming inputs and maximize yields across different areas of fields.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="technology-card text-center p-4">
+                    <div class="technology-icon">
+                        <i data-feather="cpu" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h4>IoT Monitoring</h4>
+                    <p class="mb-0">Deploy Internet of Things (IoT) sensors to monitor soil moisture, temperature, and crop health in real-time.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="technology-card text-center p-4">
+                    <div class="technology-icon">
+                        <i data-feather="gift" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h4>Vertical Farming</h4>
+                    <p class="mb-0">Grow crops in vertically stacked layers to maximize production in limited space, ideal for urban settings.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="technology-card text-center p-4">
+                    <div class="technology-icon">
+                        <i data-feather="scissors" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h4>Automated Harvesting</h4>
+                    <p class="mb-0">Use robotic harvesters and automated equipment to reduce labor costs and increase harvesting efficiency.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="technology-card text-center p-4">
+                    <div class="technology-icon">
+                        <i data-feather="activity" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h4>Drone Technology</h4>
+                    <p class="mb-0">Employ drones for crop monitoring, spraying pesticides, and assessing crop health from above.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="600">
+                <div class="technology-card text-center p-4">
+                    <div class="technology-icon">
+                        <i data-feather="cloud-rain" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <h4>Smart Irrigation</h4>
+                    <p class="mb-0">Implement automated irrigation systems that respond to weather forecasts and soil conditions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Soil Health Section -->
+<section class="soil-health-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 data-aos="fade-up">Soil Health & Nutrition</h2>
+            <p class="text-muted" data-aos="fade-up" data-aos-delay="100">Understanding and managing soil nutrients for optimal crop growth</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="soil-health-card mb-4">
+                    <div class="soil-health-header">
+                        <h4 class="mb-0">Essential Soil Nutrients</h4>
+                    </div>
+                    <div class="soil-health-body">
+                        <div class="nutrient-item">
+                            <div class="nutrient-icon n">N</div>
+                            <div class="nutrient-text">
+                                <h5>Nitrogen (N)</h5>
+                                <p class="mb-0">Essential for leaf growth and green color. Deficiency causes yellowing of older leaves.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="nutrient-item">
+                            <div class="nutrient-icon p">P</div>
+                            <div class="nutrient-text">
+                                <h5>Phosphorus (P)</h5>
+                                <p class="mb-0">Important for root development and flowering. Deficiency leads to purple-tinted leaves.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="nutrient-item">
+                            <div class="nutrient-icon k">K</div>
+                            <div class="nutrient-text">
+                                <h5>Potassium (K)</h5>
+                                <p class="mb-0">Strengthens plants and improves disease resistance. Deficiency causes brown leaf edges.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="nutrient-item">
+                            <div class="nutrient-icon ph">pH</div>
+                            <div class="nutrient-text">
+                                <h5>Soil pH</h5>
+                                <p class="mb-0">Affects nutrient availability. Most crops prefer slightly acidic to neutral pH (6.0-7.0).</p>
+                            </div>
+                        </div>
+                        
+                        <div class="nutrient-item">
+                            <div class="nutrient-icon organic">OM</div>
+                            <div class="nutrient-text">
+                                <h5>Organic Matter</h5>
+                                <p class="mb-0">Improves soil structure, water retention, and nutrient availability. Aim for 3-5%.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="resource-card">
+                            <div class="resource-icon">
+                                <i data-feather="file-text" style="width: 25px; height: 25px;"></i>
+                            </div>
+                            <h5>Soil Testing Guide</h5>
+                            <p>Learn how to properly collect soil samples and interpret test results.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success mt-2">Download Guide</a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="resource-card">
+                            <div class="resource-icon">
+                                <i data-feather="book" style="width: 25px; height: 25px;"></i>
+                            </div>
+                            <h5>Fertilizer Calculator</h5>
+                            <p>Calculate the right amount of fertilizers based on soil test results and crop needs.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success mt-2">Use Calculator</a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="resource-card">
+                            <div class="resource-icon">
+                                <i data-feather="video" style="width: 25px; height: 25px;"></i>
+                            </div>
+                            <h5>Video Tutorials</h5>
+                            <p>Watch expert demonstrations on soil improvement techniques.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success mt-2">Watch Videos</a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="resource-card">
+                            <div class="resource-icon">
+                                <i data-feather="map-pin" style="width: 25px; height: 25px;"></i>
+                            </div>
+                            <h5>Local Soil Labs</h5>
+                            <p>Find soil testing laboratories near your location for professional analysis.</p>
+                            <a href="#" class="btn btn-sm btn-outline-success mt-2">Find Labs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mb-4 mb-lg-0" data-aos="fade-right">
+                <h2>Need personalized farming advice?</h2>
+                <p class="lead mb-0">Connect with our agricultural experts for crop-specific guidance tailored to your farm.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end" data-aos="fade-left">
+                <a href="/contact/" class="btn btn-light btn-lg">
+                    <i data-feather="message-circle" class="me-2"></i> Talk to an Expert
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modals for Farming Guides -->
+<!-- Rice Farming Modal -->
+<div class="modal fade" id="riceFarmingModal" tabindex="-1" aria-labelledby="riceFarmingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="riceFarmingModalLabel">Complete Guide to Rice Farming</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h3>Introduction to Rice Cultivation</h3>
+                <p>Rice (Oryza sativa) is one of the most important food crops worldwide, providing essential nutrition to billions of people. This guide covers modern techniques for rice cultivation, water management, and maximizing yields.</p>
+                
+                <h4>Varieties of Rice</h4>
+                <p>Choose the right variety based on your local climate, soil conditions, and market demand:</p>
+                <ul>
+                    <li><strong>Long-grain varieties:</strong> Such as Basmati, known for aroma and distinct flavor</li>
+                    <li><strong>Medium-grain varieties:</strong> Like Sona Masuri, balancing stickiness and separation</li>
+                    <li><strong>Short-grain varieties:</strong> Including Gobindobhog, typically stickier when cooked</li>
+                    <li><strong>Hybrid varieties:</strong> Offering higher yields and disease resistance</li>
+                </ul>
+                
+                <h4>Land Preparation</h4>
+                <p>Proper land preparation is crucial for successful rice cultivation:</p>
+                <ol>
+                    <li>Plow the field to a depth of 15-20 cm using a tractor or animal-drawn plow</li>
+                    <li>Puddle (mix soil with water) to create an impervious layer that retains water</li>
+                    <li>Level the field using a laser leveler for efficient water management</li>
+                    <li>Create bunds (raised edges) around the field to control water</li>
+                    <li>Allow the field to settle for 2-3 days before transplanting seedlings</li>
+                </ol>
+                
+                <h4>Nursery Management</h4>
+                <p>For transplanted rice, seedling quality is important:</p>
+                <ol>
+                    <li>Prepare a separate nursery bed with fine tilth soil</li>
+                    <li>Treat seeds with fungicide to prevent seedling diseases</li>
+                    <li>Sow pre-germinated seeds evenly on the nursery bed</li>
+                    <li>Maintain 2-3 cm water level in the nursery</li>
+                    <li>Seedlings will be ready for transplanting in 21-25 days</li>
+                </ol>
+                
+                <h4>Transplanting or Direct Seeding</h4>
+                <p>Rice can be established either through transplanting or direct seeding:</p>
+                
+                <p><strong>Transplanting:</strong></p>
+                <ul>
+                    <li>Space seedlings at 20cm × 15cm for optimal plant population</li>
+                    <li>Plant 2-3 seedlings per hill at a depth of 2-3 cm</li>
+                    <li>Complete transplanting within 30 days of seed sowing</li>
+                </ul>
+                
+                <p><strong>Direct Seeding:</strong></p>
+                <ul>
+                    <li>Suitable for areas with labor shortages</li>
+                    <li>Use drum seeders or broadcast pre-germinated seeds</li>
+                    <li>Maintain thin water layer (1-2 cm) for first week</li>
+                </ul>
+                
+                <h4>Water Management</h4>
+                <p>Efficient water management is crucial for rice production:</p>
+                <ul>
+                    <li>Maintain 2-5 cm water level during vegetative stage</li>
+                    <li>Drain field 7-10 days before harvesting</li>
+                    <li>Consider alternate wetting and drying (AWD) technique to save water</li>
+                    <li>Install piezometers to monitor field water table</li>
+                </ul>
+                
+                <h4>Nutrient Management</h4>
+                <p>Balanced nutrition ensures good yield and quality:</p>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nutrient</th>
+                            <th>Requirement (kg/ha)</th>
+                            <th>Timing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nitrogen (N)</td>
+                            <td>100-120</td>
+                            <td>Split application: 50% at transplanting, 25% at tillering, 25% at panicle initiation</td>
+                        </tr>
+                        <tr>
+                            <td>Phosphorus (P₂O₅)</td>
+                            <td>50-60</td>
+                            <td>Full dose as basal application</td>
+                        </tr>
+                        <tr>
+                            <td>Potassium (K₂O)</td>
+                            <td>50-60</td>
+                            <td>50% as basal, 50% at panicle initiation</td>
+                        </tr>
+                        <tr>
+                            <td>Zinc (Zn)</td>
+                            <td>5-10</td>
+                            <td>As basal application</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4>Weed Management</h4>
+                <p>Effective weed control is essential for good yields:</p>
+                <ul>
+                    <li>Pre-emergence herbicides like Pretilachlor (0.5-0.75 kg/ha) within 3 days of transplanting</li>
+                    <li>Post-emergence herbicides like Bispyribac sodium (25-30 g/ha) 15-20 days after transplanting</li>
+                    <li>Manual weeding at 20-25 days and 40-45 days after transplanting</li>
+                    <li>Maintain proper water level to suppress weed growth</li>
+                </ul>
+                
+                <h4>Pest and Disease Management</h4>
+                <p><strong>Common Pests:</strong></p>
+                <ul>
+                    <li><strong>Stem borers:</strong> Apply Cartap hydrochloride (4%) or Fipronil (0.3%) granules</li>
+                    <li><strong>Brown planthopper:</strong> Spray Imidacloprid (17.8 SL) @ 100-125 ml/ha</li>
+                    <li><strong>Leaf folder:</strong> Apply Chlorantraniliprole (18.5 SC) @ 150 ml/ha</li>
+                </ul>
+                
+                <p><strong>Common Diseases:</strong></p>
+                <ul>
+                    <li><strong>Blast:</strong> Spray Tricyclazole (75 WP) @ 0.6 g/l of water</li>
+                    <li><strong>Bacterial leaf blight:</strong> Spray Streptocycline (9:1) @ 100 g/ha</li>
+                    <li><strong>Sheath blight:</strong> Apply Hexaconazole (5 EC) @ 2 ml/l of water</li>
+                </ul>
+                
+                <h4>Harvesting and Post-harvest</h4>
+                <p>Proper harvesting and post-harvest handling preserve quality and minimize losses:</p>
+                <ol>
+                    <li>Harvest when 80-85% of grains turn golden yellow</li>
+                    <li>Use combine harvesters where available for efficient harvesting</li>
+                    <li>Dry harvested paddy to 12-14% moisture content</li>
+                    <li>Store in clean, dry, and well-ventilated conditions</li>
+                    <li>For seed purpose, maintain moisture at 12% and store in sealed containers</li>
+                </ol>
+                
+                <h4>Yield Enhancement Tips</h4>
+                <ul>
+                    <li>Use certified seeds of recommended varieties</li>
+                    <li>Adopt System of Rice Intensification (SRI) methods for higher yields</li>
+                    <li>Follow integrated nutrient management practices</li>
+                    <li>Implement integrated pest management for sustainable production</li>
+                    <li>Consider crop insurance to mitigate risks</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" class="btn btn-success"><i data-feather="download" class="feather-small me-1"></i> Download Guide</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Feather icons
+        feather.replace();
+        
+        // Update Calendar button click event
+        const updateCalendarBtn = document.getElementById('update-calendar');
+        if (updateCalendarBtn) {
+            updateCalendarBtn.addEventListener('click', function() {
+                const regionSelect = document.getElementById('region-select');
+                const selectedRegion = regionSelect.value;
+                
+                // Simulate loading
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+                this.disabled = true;
+                
+                // Simulate data update
+                setTimeout(() => {
+                    this.innerHTML = '<i data-feather="refresh-cw" class="feather-small"></i>';
+                    this.disabled = false;
+                    feather.replace();
+                    
+                    // Update calendar based on selected region
+                    updateCalendarData(selectedRegion);
+                }, 1000);
+            });
+        }
+        
+        // Function to update calendar data based on region
+        function updateCalendarData(region) {
+            // In a real application, this would fetch data from the server
+            const calendarData = {
+                north: {
+                    'January': [
+                        '<span style="color: #28a745;">●</span> Wheat (Late)',
+                        '<span style="color: #ffc107;">●</span> Peas, Carrots',
+                        '<span style="color: #6610f2;">●</span> Bengal Gram'
+                    ],
+                    'February': [
+                        '<span style="color: #28a745;">●</span> Barley',
+                        '<span style="color: #ffc107;">●</span> Tomatoes, Brinjal',
+                        '<span style="color: #fd7e14;">●</span> Mustard'
+                    ],
+                    // ... more months
+                },
+                south: {
+                    'January': [
+                        '<span style="color: #28a745;">●</span> Rice (Rabi)',
+                        '<span style="color: #ffc107;">●</span> Tomatoes, Onions',
+                        '<span style="color: #17a2b8;">●</span> Banana planting'
+                    ],
+                    'February': [
+                        '<span style="color: #ffc107;">●</span> Brinjal, Chillies',
+                        '<span style="color: #17a2b8;">●</span> Mango flowering',
+                        '<span style="color: #6610f2;">●</span> Green Gram'
+                    ],
+                    // ... more months
+                },
+                east: {
+                    'January': [
+                        '<span style="color: #28a745;">●</span> Mustard',
+                        '<span style="color: #ffc107;">●</span> Potato, Cabbage',
+                        '<span style="color: #6610f2;">●</span> Lentil'
+                    ],
+                    'February': [
+                        '<span style="color: #28a745;">●</span> Wheat (Late)',
+                        '<span style="color: #ffc107;">●</span> Tomato, Cauliflower',
+                        '<span style="color: #fd7e14;">●</span> Sesame'
+                    ],
+                    // ... more months
+                },
+                west: {
+                    'January': [
+                        '<span style="color: #ffc107;">●</span> Onion, Garlic',
+                        '<span style="color: #fd7e14;">●</span> Groundnut',
+                        '<span style="color: #17a2b8;">●</span> Papaya'
+                    ],
+                    'February': [
+                        '<span style="color: #ffc107;">●</span> Okra, Cucumber',
+                        '<span style="color: #17a2b8;">●</span> Watermelon',
+                        '<span style="color: #fd7e14;">●</span> Sunflower'
+                    ],
+                    // ... more months
+                },
+                central: {
+                    'January': [
+                        '<span style="color: #28a745;">●</span> Wheat',
+                        '<span style="color: #ffc107;">●</span> Chilli, Brinjal',
+                        '<span style="color: #fd7e14;">●</span> Soybean'
+                    ],
+                    'February': [
+                        '<span style="color: #ffc107;">●</span> Tomato, Onion',
+                        '<span style="color: #6610f2;">●</span> Gram',
+                        '<span style="color: #fd7e14;">●</span> Cotton'
+                    ],
+                    // ... more months
+                }
+            };
+            
+            // Get all month containers
+            const calendarMonths = document.querySelectorAll('.calendar-month');
+            
+            // Update each month with the data for the selected region
+            calendarMonths.forEach(monthContainer => {
+                const monthName = monthContainer.querySelector('.calendar-month-name').textContent;
+                const cropsList = monthContainer.querySelector('.calendar-crops');
+                
+                // Get data for this month in the selected region
+                const monthData = calendarData[region][monthName];
+                
+                // If we have data for this month, update the content
+                if (monthData) {
+                    cropsList.innerHTML = monthData.map(crop => `<p>${crop}</p>`).join('');
+                }
+            });
+            
+            // Show a toast notification
+            alert(`Calendar updated for ${region.charAt(0).toUpperCase() + region.slice(1)} India region.`);
+        }
+    });
+</script>
+{% endblock %}
