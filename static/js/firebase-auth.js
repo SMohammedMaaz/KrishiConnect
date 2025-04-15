@@ -1,5 +1,5 @@
 /**
- * KrishiConnect - Firebase Authentication Helper
+ * AgroLink - Firebase Authentication Helper
  * Contains shared authentication functionality using Firebase
  */
 
