@@ -2,7 +2,7 @@
  * AgroLink AI Assistant
  * Intelligent chatbot to help farmers and buyers navigate the platform
  */
-class AgroLinkChatbot {
+class KrishiConnectChatbot {
     constructor() {
         this.container = null;
         this.button = null;

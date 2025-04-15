@@ -1,7 +1,7 @@
 /**
- * AgroLink - Main JavaScript
+ * KrishiConnect - Main JavaScript
  * 
- * This file contains the core JavaScript functionality for the AgroLink platform.
+ * This file contains the core JavaScript functionality for the KrishiConnect platform.
  */
 
 document.addEventListener('DOMContentLoaded', function() {
