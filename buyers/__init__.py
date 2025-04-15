@@ -1,1 +1,1 @@
-# Buyers app for KrishiConnect
+# Buyers app for AgroLink

@@ -1,1 +1,1 @@
-# Farmers app for KrishiConnect
+# Farmers app for AgroLink

@@ -1,5 +1,5 @@
 /**
- * KrishiConnect AI Assistant
+ * AgroLink AI Assistant
  * Intelligent chatbot to help farmers and buyers navigate the platform
  */
 class KrishiConnectChatbot {

@@ -1,1 +1,1 @@
-# KrishiConnect Django Project
+# AgroLink Django Project

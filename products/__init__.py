@@ -1,1 +1,1 @@
-# Products app for KrishiConnect
+# Products app for AgroLink

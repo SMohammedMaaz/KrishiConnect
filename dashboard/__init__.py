@@ -1,1 +1,1 @@
-# Dashboard app for KrishiConnect
+# Dashboard app for AgroLink
