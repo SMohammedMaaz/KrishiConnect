@@ -236,7 +236,15 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize Firebase
-        firebase.initializeApp(window.firebaseConfig);
+        const firebaseConfig = {
+            apiKey: "{{ firebase_config.apiKey }}",
+            authDomain: "{{ firebase_config.authDomain }}",
+            projectId: "{{ firebase_config.projectId }}",
+            storageBucket: "{{ firebase_config.storageBucket }}",
+            messagingSenderId: "{{ firebase_config.messagingSenderId }}",
+            appId: "{{ firebase_config.appId }}"
+        };
+        firebase.initializeApp(firebaseConfig);
         
         const auth = firebase.auth();
         let verificationId = null;
